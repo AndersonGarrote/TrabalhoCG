@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../usr/share/icons/gnome/16x16/devices/display.png</normaloff>../../../../usr/share/icons/gnome/16x16/devices/display.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="GLWidget" name="glwidget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GLWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">GLWidget.h</header>
+   <container>1</container>
+   <slots>
+    <slot>shrink(bool)</slot>
+    <slot>smooth(bool)</slot>
+    <slot>shrink_value(int)</slot>
+    <slot>takeScreenshot()</slot>
+    <slot>showFileOpenDialog()</slot>
+    <slot>tsurface(bool)</slot>
+    <slot>qsurface(bool)</slot>
+    <slot>tsurfaceColor(QColor)</slot>
+    <slot>qsurfaceColor(QColor)</slot>
+    <slot>tpoints(bool)</slot>
+    <slot>qpoints(bool)</slot>
+    <slot>tpointsColor(QColor)</slot>
+    <slot>qpointsColor(QColor)</slot>
+    <slot>tedges(bool)</slot>
+    <slot>qedges(bool)</slot>
+    <slot>tedgesColor(QColor)</slot>
+    <slot>qedgesColor(QColor)</slot>
+    <slot>tpsize(double)</slot>
+    <slot>qpsize(double)</slot>
+    <slot>tesize(double)</slot>
+    <slot>qesize(double)</slot>
+    <slot>run()</slot>
+    <slot>saveBoth()</slot>
+    <slot>saveT()</slot>
+    <slot>saveQ()</slot>
+    <slot>iterations(int)</slot>
+    <slot>parameterization(int)</slot>
+    <slot>error(double)</slot>
+    <slot>graphs(bool)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>changeViewShader(int)</slot>
+  <slot>changeViewPreset(int)</slot>
+  <slot>showFileOpenDialog()</slot>
+  <slot>saveT()</slot>
+  <slot>saveQ()</slot>
+  <slot>saveBoth()</slot>
+  <slot>takeScreenshot()</slot>
+  <slot>splitView(bool)</slot>
+  <slot>tedges(bool)</slot>
+  <slot>qedges(bool)</slot>
+  <slot>tpoints(bool)</slot>
+  <slot>qpoints(bool)</slot>
+  <slot>tsurface(bool)</slot>
+  <slot>qsurface(bool)</slot>
+  <slot>tpsize(double)</slot>
+  <slot>qpsize(double)</slot>
+  <slot>tesize(double)</slot>
+  <slot>qesize(double)</slot>
+  <slot>tedgesColor(QColor)</slot>
+  <slot>qedgesColor(QColor)</slot>
+  <slot>tsurfaceColor(QColor)</slot>
+  <slot>qsurfaceColor(QColor)</slot>
+  <slot>tpointsColor(QColor)</slot>
+  <slot>qpointsColor(QColor)</slot>
+  <slot>smooth(bool)</slot>
+  <slot>background(QColor)</slot>
+  <slot>shininess(int)</slot>
+  <slot>iterations(int)</slot>
+  <slot>specular(double)</slot>
+  <slot>diffuse(double)</slot>
+  <slot>ambient(double)</slot>
+  <slot>error(double)</slot>
+  <slot>graphs(bool)</slot>
+  <slot>parameterization(int)</slot>
+  <slot>run()</slot>
+ </slots>
+</ui>
