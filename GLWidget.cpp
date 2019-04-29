@@ -106,12 +106,12 @@ void GLWidget :: readVTKFile ( const QString & fileName )
         for ( unsigned int i = 0; i < numVertices ; i ++) {
             float x, y, z;
             stream >> x >> y >> z;
-            max . setX ( qMax ( max .x() , x));
-            max . setY ( qMax ( max .y() , y));
-            max . setZ ( qMax ( max .z() , z));
-            min . setX ( qMin ( min .x() , x));
-            min . setY ( qMin ( min .y() , y));
-            min . setZ ( qMin ( min .z() , z));
+            max . setX ( qMax ( max .x() , (qreal)x));
+            max . setY ( qMax ( max .y() , (qreal)y));
+            max . setZ ( qMax ( max .z() , (qreal)z));
+            min . setX ( qMin ( min .x() , (qreal)x));
+            min . setY ( qMin ( min .y() , (qreal)y));
+            min . setZ ( qMin ( min .z() , (qreal)z));
 
             vertices [i] = QVector4D (x, y, z, 1.0) ;
         }
