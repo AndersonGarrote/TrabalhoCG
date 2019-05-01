@@ -1,2 +1,5 @@
-#ignorar objetos .o
+#ignorar objetos .o, moc_
 *.o
+moc_*
+Makefile
+polygonal-shading*
