@@ -36,7 +36,7 @@ public slots :
     void showFileOpenDialog ();
 
 private:
-    void readVTKFile ( const QString & fileName );
+    void readOBJFile ( const QString & fileName );
 
     void createVBOs ();
     void genNormals ();
@@ -47,9 +47,12 @@ private:
     unsigned int numVertices ;
     unsigned int numFaces ;
 
-    QVector4D * vertices ;
+//    QVector4D * vertices ;
+    std::vector<QVector4D> vertices;
+    QVector4D midpoint;
+    double invdiag;
     QVector3D * normals ;
-    unsigned int * indices ;
+    std::vector<unsigned int> indices ;
 
     QMatrix4x4 modelViewMatrix ;
     QMatrix4x4 projectionMatrix ;

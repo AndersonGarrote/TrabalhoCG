@@ -8,8 +8,8 @@ GLWidget :: GLWidget ( QWidget * parent) :
     vboNormals = 0;
     vboIndices = 0;
 
-    vertices = 0;
-    indices = 0;
+    //vertices = 0;
+    //indices = 0;
     normals = 0;
 
     vertexShader = 0;
@@ -31,7 +31,7 @@ GLWidget ::~GLWidget ()
 
 void GLWidget :: showFileOpenDialog ()
 {
-    QByteArray fileFormat = "vtk";
+    QByteArray fileFormat = "obj";
     QString fileName ;
     fileName = QFileDialog :: getOpenFileName (this ,
                                                "Open File",
@@ -41,7 +41,7 @@ void GLWidget :: showFileOpenDialog ()
                                                . arg( QString ( fileFormat )));
     if (! fileName.isEmpty ()) {
 
-        readVTKFile ( fileName );
+        readOBJFile ( fileName );
 
         genNormals ();
         createVBOs ();
@@ -77,7 +77,91 @@ void GLWidget :: genNormals ()
     }
 }
 
-void GLWidget :: readVTKFile ( const QString & fileName )
+void GLWidget :: readOBJFile ( const QString & fileName )
+{
+  std :: ifstream stream ;
+  stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
+
+  if (! stream . is_open ()) {
+      qWarning (" Cannot open file .");
+      return ;
+  }
+
+  char s[2] = {' ',' '};
+  double x, y, z;
+  int v[4], vn[4], vt[4];
+  char c;
+  double minLim = std :: numeric_limits < double >:: min ();
+  double maxLim = std :: numeric_limits < double >:: max ();
+  QVector4D max ( minLim , minLim , minLim , 1.0) ;
+  QVector4D min ( maxLim , maxLim , maxLim , 1.0) ;
+
+  vertices.clear();
+  indices.clear();
+    int linhas=0;
+  while(!stream.eof()){
+      std::cout << linhas << " " << '\n'; linhas++;
+      s[0] = stream.get();
+      if(s[0]!='\n'){
+        s[1] = stream.get();
+
+        //Vertices
+        if(s[0]=='v'&&s[1]==' '){
+          numVertices++;
+
+          stream >> x >> y >> z;
+          max . setX ( qMax ( max .x() , x));
+          max . setY ( qMax ( max .y() , y));
+          max . setZ ( qMax ( max .z() , z));
+          min . setX ( qMin ( min .x() , x));
+          min . setY ( qMin ( min .y() , y));
+          min . setZ ( qMin ( min .z() , z));
+
+          vertices.push_back(QVector4D (x, y, z, 1.0));
+        }
+        //Normal
+        else if(s[0]=='v'&&s[1]=='n'){
+          stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        //Texturas
+        else if(s[0]=='v'&&s[1]=='t'){
+          stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        //Faces
+        else if(s[0]=='f'&&s[1]==' '){
+          numFaces++;
+          for (size_t j = 0; j < 3; j++) {
+            stream >> v[j] >> c >> vn[j] >> c >>  vt[j];
+            v[j]--;
+            vn[j]--;
+            vt[j]--;
+          }
+          indices.push_back(v[0]);
+          indices.push_back(v[1]);
+          indices.push_back(v[2]);
+
+          //Verifica se sao 4 vertices
+          if((stream.get()==' ' && stream.get() != '\n') ||stream.get()==' ' ){
+            numFaces++;
+            stream >> v[3] >> c >> vn[3] >> c >>  vt[3];
+            v[3]--;
+            vn[3]--;
+            vt[3]--;
+            indices.push_back(v[0]);
+            indices.push_back(v[2]);
+            indices.push_back(v[3]);
+          }
+        }else{
+          stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+      }
+  }
+  midpoint = ( min + max ) * 0.5;
+  invdiag = 1 / ( max - min ). length ();
+  stream.close();
+}
+
+/*void GLWidget :: readVTKFile ( const QString & fileName )
 {
     std :: ifstream stream ;
     stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
@@ -104,18 +188,19 @@ void GLWidget :: readVTKFile ( const QString & fileName )
         QVector4D min ( maxLim , maxLim , maxLim , 1.0) ;
 
         for ( unsigned int i = 0; i < numVertices ; i ++) {
-            float x, y, z;
+            qreal x, y, z;
             stream >> x >> y >> z;
-            max . setX ( qMax ( max .x() , (qreal)x));
-            max . setY ( qMax ( max .y() , (qreal)y));
-            max . setZ ( qMax ( max .z() , (qreal)z));
-            min . setX ( qMin ( min .x() , (qreal)x));
-            min . setY ( qMin ( min .y() , (qreal)y));
-            min . setZ ( qMin ( min .z() , (qreal)z));
+            max . setX ( qMax ( max .x() , x));
+            max . setY ( qMax ( max .y() , y));
+            max . setZ ( qMax ( max .z() , z));
+            min . setX ( qMin ( min .x() , x));
+            min . setY ( qMin ( min .y() , y));
+            min . setZ ( qMin ( min .z() , z));
 
             vertices [i] = QVector4D (x, y, z, 1.0) ;
         }
         QVector4D midpoint = ( min + max ) * 0.5;
+
         double invdiag = 1 / ( max - min ). length ();
 
         for ( unsigned int i = 0; i < numVertices ; i ++) {
@@ -142,7 +227,7 @@ void GLWidget :: readVTKFile ( const QString & fileName )
     }
 
     stream . close ();
-}
+}*/
 
 void GLWidget :: createVBOs (  )
 {
@@ -152,10 +237,11 @@ void GLWidget :: createVBOs (  )
     vboVertices -> create ();
     vboVertices -> bind ();
     vboVertices -> setUsagePattern ( QGLBuffer :: StaticDraw );
-    vboVertices -> allocate ( vertices , numVertices * sizeof ( QVector4D ));
+    vboVertices -> allocate ( vertices.data() , numVertices * sizeof ( QVector4D ));
 
-    delete [] vertices;
-    vertices = NULL;
+    //delete [] vertices;
+    //vertices = NULL;
+    vertices.clear();
 
     vboNormals = new QGLBuffer ( QGLBuffer :: VertexBuffer );
     vboNormals -> create ();
@@ -170,10 +256,11 @@ void GLWidget :: createVBOs (  )
     vboIndices -> create () ;
     vboIndices -> bind () ;
     vboIndices -> setUsagePattern ( QGLBuffer :: StaticDraw );
-    vboIndices -> allocate ( indices , numFaces * 3 * sizeof ( unsigned int ));
+    vboIndices -> allocate ( indices.data() , numFaces * 3 * sizeof ( unsigned int ));
 
-    delete [] indices ;
-    indices = NULL ;
+//    delete [] indices ;
+//    indices = NULL ;
+    indices.clear();
 }
 
 void GLWidget :: destroyVBOs ()
