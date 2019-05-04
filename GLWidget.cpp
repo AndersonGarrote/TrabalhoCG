@@ -142,7 +142,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
           for (size_t j = 0; j < 3; j++) {
             QStringList subTokens = tokens[j+1].split('/');
             //stream >> v[j] >> c >> vn[j] >> c >>  vt[j];
-            v[j] = subTokens[0].toDouble(); vn[j] = subTokens[1].toDouble(); vt[j] = subTokens[2].toDouble();
+            v[j] = subTokens[0].toInt(); vn[j] = subTokens[1].toInt(); vt[j] = subTokens[2].toInt();
 
             v[j]--;
             vn[j]--;
@@ -176,13 +176,6 @@ void GLWidget :: readOBJFile ( const QString & fileName )
   midpoint = ( min + max ) * 0.5;
   invdiag = 1 / ( max - min ). length ();
 
-
-  //*************[Centralização sem Shader]*****************
-  for ( unsigned int i = 0; i < numVertices ; i ++) {
-      vertices [i] = ( vertices [i] - midpoint )* invdiag ;
-      vertices [i]. setW (1) ;
-  }
-  /*********************************************************/
   stream.close();
 
 }
@@ -367,6 +360,13 @@ void GLWidget :: paintGL ()
     modelViewMatrix.setToIdentity ();
     modelViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
     modelViewMatrix.translate (0, 0, zoom );
+
+    //Escala
+    modelViewMatrix.scale(invdiag,invdiag,invdiag);
+    //Translação
+    modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
+
+
     modelViewMatrix.rotate ( trackBall.getRotation ());
 
     shaderProgram -> bind ();
@@ -453,6 +453,7 @@ void GLWidget :: mouseReleaseEvent ( QMouseEvent * event )
 
 void GLWidget :: wheelEvent ( QWheelEvent * event )
 {
+
     zoom += 0.0001 * event -> delta ();
 
     updateGL();
