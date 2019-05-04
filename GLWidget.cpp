@@ -98,9 +98,9 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
   vertices.clear();
   indices.clear();
-    int linhas=0;
+
   while(!stream.eof()){
-      std::cout << linhas << " " << '\n'; linhas++;
+
       s[0] = stream.get();
       if(s[0]!='\n'){
         s[1] = stream.get();
@@ -141,9 +141,22 @@ void GLWidget :: readOBJFile ( const QString & fileName )
           indices.push_back(v[2]);
 
           //Verifica se sao 4 vertices
-          if((stream.get()==' ' && stream.get() != '\n') ||stream.get()==' ' ){
+
+          char pnt[300];
+          stream.getline(pnt,300,'\n');
+
+          QString str(pnt);
+          QStringList sList = str.split("/");
+          // list1: [ "a", "", "b", "c" ]
+
+          if(sList.size()==3){
+
+            //stream >> v[3] >> c >> vn[3] >> c >>  vt[3];
+            v[3]=sList[0].toInt();
+            vn[3]=sList[1].toInt();
+            vt[3]=sList[2].toInt();
+
             numFaces++;
-            stream >> v[3] >> c >> vn[3] >> c >>  vt[3];
             v[3]--;
             vn[3]--;
             vt[3]--;
@@ -234,8 +247,10 @@ void GLWidget :: createVBOs (  )
     destroyVBOs ();
 
     vboVertices = new QGLBuffer( QGLBuffer :: VertexBuffer );
-    vboVertices -> create ();
-    vboVertices -> bind ();
+    if(vboVertices -> create ())
+        std::cout << "create ok" << std::endl;
+    if(vboVertices -> bind ())
+        std::cout << "bind ok" << std::endl;
     vboVertices -> setUsagePattern ( QGLBuffer :: StaticDraw );
     vboVertices -> allocate ( vertices.data() , numVertices * sizeof ( QVector4D ));
 
