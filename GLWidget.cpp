@@ -4,18 +4,20 @@ GLWidget :: GLWidget ( QWidget * parent) :
     QGLWidget ( parent )
 {
     zoom = 0;
-    vboVertices = 0;
-    vboNormals = 0;
-    vboIndices = 0;
+    vboVertices = nullptr;
+    vboNormals = nullptr;
+    vboIndices = nullptr;
 
     //vertices = 0;
     //indices = 0;
-    normals = 0;
+    normals = nullptr;
+    numFaces=0;
+    numVertices=0;
 
-    vertexShader = 0;
-    fragmentShader = 0;
+    vertexShader = nullptr;
+    fragmentShader = nullptr;
 
-    shaderProgram = 0;
+    shaderProgram = nullptr;
 
     currentShader = 0;
 
@@ -87,7 +89,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
       return ;
   }
 
-  char s[2] = {' ',' '};
+  char linhaChar[2048];
   double x, y, z;
   int v[4], vn[4], vt[4];
   char c;
@@ -101,15 +103,22 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
   while(!stream.eof()){
 
-      s[0] = stream.get();
-      if(s[0]!='\n'){
-        s[1] = stream.get();
+      stream.getline(linhaChar,2048,'\n');
+      QString linha(linhaChar);
+
+      QStringList tokens = linha.split(" ");
+
+      tokens.removeAll("");//Remove tokens vazios obtidos de espaçamento duplo
+
+      if(linha[0]!='#'&&tokens.size()>1){
 
         //Vertices
-        if(s[0]=='v'&&s[1]==' '){
+        if(tokens[0]=="v"){
           numVertices++;
 
-          stream >> x >> y >> z;
+          //stream >> x >> y >> z;
+          x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
+
           max . setX ( qMax ( max .x() , x));
           max . setY ( qMax ( max .y() , y));
           max . setZ ( qMax ( max .z() , z));
@@ -118,20 +127,23 @@ void GLWidget :: readOBJFile ( const QString & fileName )
           min . setZ ( qMin ( min .z() , z));
 
           vertices.push_back(QVector4D (x, y, z, 1.0));
+
         }
         //Normal
-        else if(s[0]=='v'&&s[1]=='n'){
-          stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        else if(tokens[0]=="vn"){
         }
         //Texturas
-        else if(s[0]=='v'&&s[1]=='t'){
-          stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        else if(tokens[0]=="vt"){
         }
         //Faces
-        else if(s[0]=='f'&&s[1]==' '){
+        else if(tokens[0]=="f"){
+
           numFaces++;
           for (size_t j = 0; j < 3; j++) {
-            stream >> v[j] >> c >> vn[j] >> c >>  vt[j];
+            QStringList subTokens = tokens[j+1].split('/');
+            //stream >> v[j] >> c >> vn[j] >> c >>  vt[j];
+            v[j] = subTokens[0].toDouble(); vn[j] = subTokens[1].toDouble(); vt[j] = subTokens[2].toDouble();
+
             v[j]--;
             vn[j]--;
             vt[j]--;
@@ -140,38 +152,39 @@ void GLWidget :: readOBJFile ( const QString & fileName )
           indices.push_back(v[1]);
           indices.push_back(v[2]);
 
-          //Verifica se sao 4 vertices
+          if(tokens.size()>=5){
+            //Tenta dividir o ultimo ponto em subTokens
+            QStringList subTokens = tokens[4].split('/');
 
-          char pnt[300];
-          stream.getline(pnt,300,'\n');
+            if(subTokens.size()==3){
+                //stream >> v[3] >> c >> vn[3] >> c >>  vt[3];
+                v[3] = subTokens[0].toDouble(); vn[3] = subTokens[1].toDouble(); vt[3] = subTokens[2].toDouble();
 
-          QString str(pnt);
-          QStringList sList = str.split("/");
-          // list1: [ "a", "", "b", "c" ]
-
-          if(sList.size()==3){
-
-            //stream >> v[3] >> c >> vn[3] >> c >>  vt[3];
-            v[3]=sList[0].toInt();
-            vn[3]=sList[1].toInt();
-            vt[3]=sList[2].toInt();
-
-            numFaces++;
-            v[3]--;
-            vn[3]--;
-            vt[3]--;
-            indices.push_back(v[0]);
-            indices.push_back(v[2]);
-            indices.push_back(v[3]);
+                numFaces++;
+                v[3]--;
+                vn[3]--;
+                vt[3]--;
+                indices.push_back(v[0]);
+                indices.push_back(v[2]);
+                indices.push_back(v[3]);
+            }
           }
-        }else{
-          stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
       }
   }
+
   midpoint = ( min + max ) * 0.5;
   invdiag = 1 / ( max - min ). length ();
+
+
+  //*************[Centralização sem Shader]*****************
+  for ( unsigned int i = 0; i < numVertices ; i ++) {
+      vertices [i] = ( vertices [i] - midpoint )* invdiag ;
+      vertices [i]. setW (1) ;
+  }
+  /*********************************************************/
   stream.close();
+
 }
 
 /*void GLWidget :: readVTKFile ( const QString & fileName )
@@ -247,10 +260,8 @@ void GLWidget :: createVBOs (  )
     destroyVBOs ();
 
     vboVertices = new QGLBuffer( QGLBuffer :: VertexBuffer );
-    if(vboVertices -> create ())
-        std::cout << "create ok" << std::endl;
-    if(vboVertices -> bind ())
-        std::cout << "bind ok" << std::endl;
+    vboVertices -> create ();
+    vboVertices -> bind ();
     vboVertices -> setUsagePattern ( QGLBuffer :: StaticDraw );
     vboVertices -> allocate ( vertices.data() , numVertices * sizeof ( QVector4D ));
 
@@ -299,7 +310,6 @@ void GLWidget :: destroyVBOs ()
         vboIndices = NULL ;
     }
 }
-
 
 void GLWidget :: createShaders ()
 {
