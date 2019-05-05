@@ -92,7 +92,6 @@ void GLWidget :: readOBJFile ( const QString & fileName )
   char linhaChar[2048];
   double x, y, z;
   int v[4], vn[4], vt[4];
-  char c;
   double minLim = std :: numeric_limits < double >:: min ();
   double maxLim = std :: numeric_limits < double >:: max ();
   QVector4D max ( minLim , minLim , minLim , 1.0) ;
@@ -101,31 +100,38 @@ void GLWidget :: readOBJFile ( const QString & fileName )
   vertices.clear();
   indices.clear();
 
+  //Enquanto o arquivo não acabar
   while(!stream.eof()){
 
+      //Lê uma linha do arquivo
       stream.getline(linhaChar,2048,'\n');
       QString linha(linhaChar);
 
+      //Separa a linha lida em tokens
       QStringList tokens = linha.split(" ");
 
-      tokens.removeAll("");//Remove tokens vazios obtidos de espaçamento duplo
+      //Remove tokens vazios obtidos de espaçamento duplo
+      tokens.removeAll("");
 
-      if(linha[0]!='#'&&tokens.size()>1){
+      //Caso a linha lida não seja um comentário e não esteja vazia
+      if(linha[0]!='#'&&tokens.size()>1){ 
 
         //Vertices
         if(tokens[0]=="v"){
           numVertices++;
 
-          //stream >> x >> y >> z;
+          //Recebe as coordenadas do vértice lido
           x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
 
-          max . setX ( qMax ( max .x() , x));
-          max . setY ( qMax ( max .y() , y));
-          max . setZ ( qMax ( max .z() , z));
-          min . setX ( qMin ( min .x() , x));
-          min . setY ( qMin ( min .y() , y));
-          min . setZ ( qMin ( min .z() , z));
+          //Calculo das coordenadas máximas e mínimas do objeto
+          max . setX ( qMax ((double) max .x() , x));
+          max . setY ( qMax ((double) max .y() , y));
+          max . setZ ( qMax ((double) max .z() , z));
+          min . setX ( qMin ((double) min .x() , x));
+          min . setY ( qMin ((double) min .y() , y));
+          min . setZ ( qMin ((double) min .z() , z));
 
+          //Adiciona o vértice ao vetor de vértices
           vertices.push_back(QVector4D (x, y, z, 1.0));
 
         }
@@ -140,14 +146,21 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
           numFaces++;
           for (size_t j = 0; j < 3; j++) {
+            //Divisão dos tokens em subtokens para a obtenção dos índices de vértices que formam as faces
             QStringList subTokens = tokens[j+1].split('/');
-            //stream >> v[j] >> c >> vn[j] >> c >>  vt[j];
-            v[j] = subTokens[0].toInt(); vn[j] = subTokens[1].toInt(); vt[j] = subTokens[2].toInt();
 
+            //Recebe os indices dos vértices, normais e texturas, respectivamente
+            v[j] = subTokens[0].toInt(); 
+            vn[j] = subTokens[1].toInt(); 
+            vt[j] = subTokens[2].toInt();
+
+            //Deve-se subtrair em 1, pois os índices se iniciam em 1
             v[j]--;
             vn[j]--;
             vt[j]--;
           }
+
+          //Adiciona os indices dos vértices no vetor de índices
           indices.push_back(v[0]);
           indices.push_back(v[1]);
           indices.push_back(v[2]);
@@ -157,13 +170,15 @@ void GLWidget :: readOBJFile ( const QString & fileName )
             QStringList subTokens = tokens[4].split('/');
 
             if(subTokens.size()==3){
-                //stream >> v[3] >> c >> vn[3] >> c >>  vt[3];
+                //Recebe o quarto ponto que forma a face
                 v[3] = subTokens[0].toDouble(); vn[3] = subTokens[1].toDouble(); vt[3] = subTokens[2].toDouble();
 
                 numFaces++;
                 v[3]--;
                 vn[3]--;
                 vt[3]--;
+
+                //Adiciona os índices de modo que o quadrilátero seja lido como dois triângulos
                 indices.push_back(v[0]);
                 indices.push_back(v[2]);
                 indices.push_back(v[3]);
@@ -173,80 +188,15 @@ void GLWidget :: readOBJFile ( const QString & fileName )
       }
   }
 
+  //Calculo do ponto central do objeto
   midpoint = ( min + max ) * 0.5;
+
+  //Calculo da maior distância entre dois pontos no objeto
   invdiag = 1 / ( max - min ). length ();
 
   stream.close();
 
 }
-
-/*void GLWidget :: readVTKFile ( const QString & fileName )
-{
-    std :: ifstream stream ;
-    stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
-
-    if (! stream . is_open ()) {
-        qWarning (" Cannot open file .");
-        return ;
-    }
-
-    std :: string line ;
-    stream >> line ;
-    while( line.compare( "POINTS" ) != 0 )
-        stream >> line ;
-
-    stream >> numVertices >> line ;
-
-    delete [] vertices ;
-    vertices = new QVector4D [ numVertices ];
-
-    if ( numVertices > 0) {
-        double minLim = std :: numeric_limits < double >:: min ();
-        double maxLim = std :: numeric_limits < double >:: max ();
-        QVector4D max ( minLim , minLim , minLim , 1.0) ;
-        QVector4D min ( maxLim , maxLim , maxLim , 1.0) ;
-
-        for ( unsigned int i = 0; i < numVertices ; i ++) {
-            qreal x, y, z;
-            stream >> x >> y >> z;
-            max . setX ( qMax ( max .x() , x));
-            max . setY ( qMax ( max .y() , y));
-            max . setZ ( qMax ( max .z() , z));
-            min . setX ( qMin ( min .x() , x));
-            min . setY ( qMin ( min .y() , y));
-            min . setZ ( qMin ( min .z() , z));
-
-            vertices [i] = QVector4D (x, y, z, 1.0) ;
-        }
-        QVector4D midpoint = ( min + max ) * 0.5;
-
-        double invdiag = 1 / ( max - min ). length ();
-
-        for ( unsigned int i = 0; i < numVertices ; i ++) {
-            vertices [i] = ( vertices [i] - midpoint )* invdiag ;
-            vertices [i]. setW (1) ;
-        }
-    }
-
-    stream >> line ;
-    while( line.compare( "CELLS" ) != 0 )
-        stream >> line ;
-
-    stream >> numFaces >> line;
-
-    delete [] indices ;
-    indices = new unsigned int [ numFaces * 3];
-
-    for ( unsigned int i = 0; i < numFaces ; i ++) {
-        unsigned int a, b, c;
-        stream >> line >> a >> b >> c;
-        indices [i * 3 ] = a;
-        indices [i * 3 + 1] = b;
-        indices [i * 3 + 2] = c;
-    }
-
-    stream . close ();
-}*/
 
 void GLWidget :: createVBOs (  )
 {
