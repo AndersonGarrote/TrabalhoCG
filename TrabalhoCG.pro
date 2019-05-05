@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 QT += opengl
@@ -20,3 +20,6 @@ SOURCES += Camera.cpp \
            TrackBall.cpp
 RESOURCES += resources.qrc
 
+#Shaders
+OTHER_FILES += fgouraud.glsl \
+              vgouraud.glsl
