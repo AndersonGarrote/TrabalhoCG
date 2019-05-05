@@ -7,4 +7,4 @@ Esse repositório se refere ao trabalho da disciplina de Computação Gráfica m
 * [Leonardo Seiji Nozaki](https://github.com/LeonardoNozaki) **RA:** 743561
 * [Thiago Yussuki Uehara](https://github.com/Yussuki) **RA:** 743599
 
-Mais informaçes sobre o desenvolvimento e funcionamento do codigo estão descritas na [wiki](https://github.com/AndersonGarrote/TrabalhoCG/wiki) deste repositorio.
+Mais informações sobre o desenvolvimento e funcionamento do código estão descritas na [wiki](https://github.com/AndersonGarrote/TrabalhoCG/wiki) deste repositório.
