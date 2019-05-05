@@ -3,13 +3,11 @@
 GLWidget :: GLWidget ( QWidget * parent) :
     QGLWidget ( parent )
 {
+	//Construtor, inicializando os valores das variaveis
     zoom = 0;
     vboVertices = nullptr;
     vboNormals = nullptr;
     vboIndices = nullptr;
-
-    //vertices = 0;
-    //indices = 0;
     normals = nullptr;
     numFaces=0;
     numVertices=0;
@@ -20,37 +18,30 @@ GLWidget :: GLWidget ( QWidget * parent) :
     shaderProgram = nullptr;
 
     currentShader = 0;
-
+	flagAbertura = 1;
 }
 
 GLWidget ::~GLWidget ()
 {
+	//Destrutor
     destroyShaders ();
     destroyVBOs ();
-
 }
 
 
-void GLWidget :: showFileOpenDialog ()
+void GLWidget :: showObj ()
 {
-    QByteArray fileFormat = "obj";
-    QString fileName ;
-    fileName = QFileDialog :: getOpenFileName (this ,
-                                               "Open File",
-                                               QDir :: homePath () ,
-                                               QString ("%1 Files (*.%2)")
-                                               . arg( QString ( fileFormat . toUpper ()))
-                                               . arg( QString ( fileFormat )));
-    if (! fileName.isEmpty ()) {
-
-        readOBJFile ( fileName );
+	//Funcao para exibir o objeto na tela
+    if (flagAbertura == 1) {
+		flagAbertura = 0;
+		QString fileName = "lego.obj";
+        readOBJFile ( fileName ); //funcao para leitura do arquivo obj
 
         genNormals ();
         createVBOs ();
         createShaders ();
         updateGL ();
     }
-
 }
 
 
@@ -81,121 +72,128 @@ void GLWidget :: genNormals ()
 
 void GLWidget :: readOBJFile ( const QString & fileName )
 {
-  std :: ifstream stream ;
-  stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
+	//Funcao para a leitura de um arquivo .obj 
+	//Os dados extraidos do arquivo sao armazenados nas estruturas de dados desse programa
+	std :: ifstream stream ;
+	
+	//Abertura do arquivo
+	stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
 
-  if (! stream . is_open ()) {
-      qWarning (" Cannot open file .");
-      return ;
-  }
+	if (! stream . is_open ()) {
+		//Verifica se foi possivel abrir o arquivo
+	  	qWarning (" Cannot open file .");
+	  	return ;
+	}
 
-  char linhaChar[2048];
-  double x, y, z;
-  int v[4], vn[4], vt[4];
-  double minLim = std :: numeric_limits < double >:: min ();
-  double maxLim = std :: numeric_limits < double >:: max ();
-  QVector4D max ( minLim , minLim , minLim , 1.0) ;
-  QVector4D min ( maxLim , maxLim , maxLim , 1.0) ;
+	//Cria variaveis auxiliares
+	char linhaChar[2048];
+	double x, y, z;
+	int v[4], vn[4], vt[4];
+	double minLim = std :: numeric_limits < double >:: min ();
+	double maxLim = std :: numeric_limits < double >:: max ();
+	QVector4D max ( minLim , minLim , minLim , 1.0) ;
+	QVector4D min ( maxLim , maxLim , maxLim , 1.0) ;
 
-  vertices.clear();
-  indices.clear();
+	//Limpa os vector para armazenar os novos valores
+	vertices.clear();
+	indices.clear();
 
-  //Enquanto o arquivo não acabar
-  while(!stream.eof()){
+	//Enquanto o arquivo não acabar
+	while(!stream.eof()){
+		
+		//Lê uma linha do arquivo
+		stream.getline(linhaChar,2048,'\n');
+		QString linha(linhaChar);
 
-      //Lê uma linha do arquivo
-      stream.getline(linhaChar,2048,'\n');
-      QString linha(linhaChar);
+		//Separa a linha lida em tokens
+		QStringList tokens = linha.split(" ");
 
-      //Separa a linha lida em tokens
-      QStringList tokens = linha.split(" ");
+		//Remove tokens vazios obtidos de espaçamento duplo
+		tokens.removeAll("");
 
-      //Remove tokens vazios obtidos de espaçamento duplo
-      tokens.removeAll("");
+		//Caso a linha lida não seja um comentário e não esteja vazia
+		if(linha[0]!='#'&&tokens.size()>1){ 
+				
+		//Vertices
+		if(tokens[0]=="v"){
+			numVertices++;
 
-      //Caso a linha lida não seja um comentário e não esteja vazia
-      if(linha[0]!='#'&&tokens.size()>1){ 
+			//Recebe as coordenadas do vértice lido
+			x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
 
-        //Vertices
-        if(tokens[0]=="v"){
-          numVertices++;
+			//Calculo das coordenadas máximas e mínimas do objeto
+			max . setX ( qMax ((double) max .x() , x));
+			max . setY ( qMax ((double) max .y() , y));
+			max . setZ ( qMax ((double) max .z() , z));
+			min . setX ( qMin ((double) min .x() , x));
+			min . setY ( qMin ((double) min .y() , y));
+			min . setZ ( qMin ((double) min .z() , z));
 
-          //Recebe as coordenadas do vértice lido
-          x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
+			//Adiciona o vértice ao vetor de vértices
+			vertices.push_back(QVector4D (x, y, z, 1.0));
 
-          //Calculo das coordenadas máximas e mínimas do objeto
-          max . setX ( qMax ((double) max .x() , x));
-          max . setY ( qMax ((double) max .y() , y));
-          max . setZ ( qMax ((double) max .z() , z));
-          min . setX ( qMin ((double) min .x() , x));
-          min . setY ( qMin ((double) min .y() , y));
-          min . setZ ( qMin ((double) min .z() , z));
+		}
+		//Normal
+		else if(tokens[0]=="vn"){
+		}
+		//Texturas
+		else if(tokens[0]=="vt"){
+		}
+		//Faces
+		else if(tokens[0]=="f"){
+			
+		  	numFaces++;
+			for (size_t j = 0; j < 3; j++) {
+				//Divisão dos tokens em subtokens para a obtenção dos índices de vértices que formam as faces
+				QStringList subTokens = tokens[j+1].split('/');
 
-          //Adiciona o vértice ao vetor de vértices
-          vertices.push_back(QVector4D (x, y, z, 1.0));
+				//Recebe os indices dos vértices, normais e texturas, respectivamente
+				v[j] = subTokens[0].toInt(); 
+				vn[j] = subTokens[1].toInt(); 
+				vt[j] = subTokens[2].toInt();
 
-        }
-        //Normal
-        else if(tokens[0]=="vn"){
-        }
-        //Texturas
-        else if(tokens[0]=="vt"){
-        }
-        //Faces
-        else if(tokens[0]=="f"){
+				//Deve-se subtrair em 1, pois os índices se iniciam em 1
+				v[j]--;
+				vn[j]--;
+				vt[j]--;
+		  	}
 
-          numFaces++;
-          for (size_t j = 0; j < 3; j++) {
-            //Divisão dos tokens em subtokens para a obtenção dos índices de vértices que formam as faces
-            QStringList subTokens = tokens[j+1].split('/');
+			//Adiciona os indices dos vértices no vetor de índices
+			indices.push_back(v[0]);
+			indices.push_back(v[1]);
+			indices.push_back(v[2]);
 
-            //Recebe os indices dos vértices, normais e texturas, respectivamente
-            v[j] = subTokens[0].toInt(); 
-            vn[j] = subTokens[1].toInt(); 
-            vt[j] = subTokens[2].toInt();
+		  	if(tokens.size()>=5){
+		    	//Tenta dividir o ultimo ponto em subTokens
+		    	QStringList subTokens = tokens[4].split('/');
 
-            //Deve-se subtrair em 1, pois os índices se iniciam em 1
-            v[j]--;
-            vn[j]--;
-            vt[j]--;
-          }
+		    if(subTokens.size()==3){
+		        //Recebe o quarto ponto que forma a face
+		        v[3] = subTokens[0].toDouble(); vn[3] = subTokens[1].toDouble(); vt[3] = subTokens[2].toDouble();
 
-          //Adiciona os indices dos vértices no vetor de índices
-          indices.push_back(v[0]);
-          indices.push_back(v[1]);
-          indices.push_back(v[2]);
+		        numFaces++;
+		        v[3]--;
+		        vn[3]--;
+		        vt[3]--;
 
-          if(tokens.size()>=5){
-            //Tenta dividir o ultimo ponto em subTokens
-            QStringList subTokens = tokens[4].split('/');
+		        //Adiciona os índices de modo que o quadrilátero seja lido como dois triângulos
+		        indices.push_back(v[0]);
+		        indices.push_back(v[2]);
+		        indices.push_back(v[3]);
+		    }
+		  }
+		}
+	  }
+  	}
 
-            if(subTokens.size()==3){
-                //Recebe o quarto ponto que forma a face
-                v[3] = subTokens[0].toDouble(); vn[3] = subTokens[1].toDouble(); vt[3] = subTokens[2].toDouble();
+  	//Calculo do ponto central do objeto
+  	midpoint = ( min + max ) * 0.5;
 
-                numFaces++;
-                v[3]--;
-                vn[3]--;
-                vt[3]--;
+  	//Calculo da maior distância entre dois pontos no objeto
+  	invdiag = 1 / ( max - min ). length ();
 
-                //Adiciona os índices de modo que o quadrilátero seja lido como dois triângulos
-                indices.push_back(v[0]);
-                indices.push_back(v[2]);
-                indices.push_back(v[3]);
-            }
-          }
-        }
-      }
-  }
-
-  //Calculo do ponto central do objeto
-  midpoint = ( min + max ) * 0.5;
-
-  //Calculo da maior distância entre dois pontos no objeto
-  invdiag = 1 / ( max - min ). length ();
-
-  stream.close();
-
+	//Fecha o arquivo que foi aberto
+  	stream.close();
 }
 
 void GLWidget :: createVBOs (  )
@@ -208,8 +206,6 @@ void GLWidget :: createVBOs (  )
     vboVertices -> setUsagePattern ( QGLBuffer :: StaticDraw );
     vboVertices -> allocate ( vertices.data() , numVertices * sizeof ( QVector4D ));
 
-    //delete [] vertices;
-    //vertices = NULL;
     vertices.clear();
 
     vboNormals = new QGLBuffer ( QGLBuffer :: VertexBuffer );
@@ -227,14 +223,11 @@ void GLWidget :: createVBOs (  )
     vboIndices -> setUsagePattern ( QGLBuffer :: StaticDraw );
     vboIndices -> allocate ( indices.data() , numFaces * 3 * sizeof ( unsigned int ));
 
-//    delete [] indices ;
-//    indices = NULL ;
     indices.clear();
 }
 
 void GLWidget :: destroyVBOs ()
 {
-
     if ( vboVertices ) {
         vboVertices -> release ();
         delete vboVertices ;
@@ -256,8 +249,11 @@ void GLWidget :: destroyVBOs ()
 
 void GLWidget :: createShaders ()
 {
-    destroyShaders ();
+	//Funcao para a criação dos shaders
 
+    destroyShaders (); //Primeiro destroi os shaders antigos
+
+	//Vincula os novos shaders
     QString vertexShaderFile [] = {
         ":/shaders/vgouraud.glsl",
     };
@@ -279,11 +275,11 @@ void GLWidget :: createShaders ()
 
     if (! shaderProgram -> link ())
         qWarning () << shaderProgram -> log () << endl ;
-
 }
 
 void GLWidget :: destroyShaders ()
 {
+	//Funcao para destruir os shaders antigos
     if( vertexShader ) {
         delete vertexShader ;
         vertexShader = NULL ;
@@ -292,7 +288,6 @@ void GLWidget :: destroyShaders ()
         delete fragmentShader ;
         fragmentShader = NULL ;
     }
-
     if ( shaderProgram ) {
         shaderProgram -> release ();
         delete shaderProgram ;
@@ -302,25 +297,28 @@ void GLWidget :: destroyShaders ()
 
 void GLWidget :: paintGL ()
 {
+	//Funcao para exibir o objeto na tela
+
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     if (! vboVertices )
      return ;
 
+	//Configuracao da matriz
     modelViewMatrix.setToIdentity ();
     modelViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
     modelViewMatrix.translate (0, 0, zoom );
 
-    //Escala
+    //Realizacao da escala do objeto
     modelViewMatrix.scale(invdiag,invdiag,invdiag);
-    //Translação
+    //Realizacao da translação do objeto
     modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
-
 
     modelViewMatrix.rotate ( trackBall.getRotation ());
 
     shaderProgram -> bind ();
 
+	//Atribuir os valores ao shader
     shaderProgram -> setUniformValue ("modelViewMatrix", modelViewMatrix );
     shaderProgram -> setUniformValue ("projectionMatrix", projectionMatrix );
     shaderProgram -> setUniformValue("normalMatrix", modelViewMatrix.normalMatrix ());
@@ -329,6 +327,7 @@ void GLWidget :: paintGL ()
     QVector4D diffuseProduct = light.diffuse * material.diffuse ;
     QVector4D specularProduct = light.specular * material.specular ;
 
+	//Atribuir os valores ao shader
     shaderProgram -> setUniformValue ("lightPosition", light.position );
     shaderProgram -> setUniformValue ("ambientProduct", ambientProduct );
     shaderProgram -> setUniformValue ("diffuseProduct", diffuseProduct );
@@ -336,10 +335,12 @@ void GLWidget :: paintGL ()
     shaderProgram -> setUniformValue ( "shininess", static_cast < GLfloat >( material.shininess ));
 
     vboNormals -> bind ();
+	//Atribuir os valores ao shader
     shaderProgram -> enableAttributeArray ("vNormal");
     shaderProgram -> setAttributeBuffer ("vNormal", GL_FLOAT ,0, 3, 0);
 
     vboVertices -> bind ();
+	//Atribuir os valores ao shader
     shaderProgram -> enableAttributeArray ("vPosition");
     shaderProgram -> setAttributeBuffer ("vPosition", GL_FLOAT ,0, 4, 0);
 
@@ -355,9 +356,11 @@ void GLWidget :: paintGL ()
 
 void GLWidget :: initializeGL ()
 {
+	//Funcao para inicializar o programa
     makeCurrent();
     glEnable ( GL_DEPTH_TEST );
     glClearColor (0, 0, 0, 1);
+	showObj();
 }
 
 
@@ -376,6 +379,8 @@ void GLWidget :: resizeGL ( int width , int height )
     updateGL();
 }
 
+/* Funcoes para tratar eventos de mouse */
+
 void GLWidget :: mouseMoveEvent ( QMouseEvent * event )
 {
     trackBall.mouseMove (event -> pos ());
@@ -387,8 +392,6 @@ void GLWidget :: mousePressEvent ( QMouseEvent * event )
 {
     if (event -> button () & Qt :: LeftButton )
         trackBall.mousePress (event -> pos ());
-    else if ( event->button() & Qt :: RightButton )
-        showFileOpenDialog();
 
     updateGL();
 }

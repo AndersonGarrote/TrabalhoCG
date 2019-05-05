@@ -33,7 +33,7 @@ protected :
 
 public slots :
 
-    void showFileOpenDialog ();
+    void showObj ();
 
 private:
     void readOBJFile ( const QString & fileName );
@@ -47,7 +47,6 @@ private:
     unsigned int numVertices ;
     unsigned int numFaces ;
 
-//    QVector4D * vertices ;
     std::vector<QVector4D> vertices;
     QVector4D midpoint;
     double invdiag;
@@ -61,7 +60,7 @@ private:
     Material material ;
     TrackBall trackBall ;
     double zoom ;
-
+	int flagAbertura;
     QGLBuffer * vboVertices ;
     QGLBuffer * vboNormals ;
     QGLBuffer * vboIndices;
