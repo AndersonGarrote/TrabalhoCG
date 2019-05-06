@@ -49,20 +49,12 @@ void GLWidget :: genNormals ()
 {
     delete [] normals ;
     normals = new QVector3D [numVertices];
-
-    for ( unsigned int i = 0; i < numFaces ; i ++) {
-
-        unsigned int i1 = indices [i * 3 ];
-        unsigned int i2 = indices [i * 3 + 1];
-        unsigned int i3 = indices [i * 3 + 2];
-        QVector3D v1 = vertices [i1].toVector3D ();
-        QVector3D v2 = vertices [i2].toVector3D ();
-        QVector3D v3 = vertices [i3].toVector3D ();
-        QVector3D faceNormal = QVector3D::crossProduct (v2 - v1 , v3 - v1);
-        faceNormal.normalize();
-        normals [i1] += faceNormal ;
-        normals [i2] += faceNormal ;
-        normals [i3] += faceNormal ;
+    intDoub vvn;
+    
+    while(!vertVn.empty()){
+        vvn= vertVn.front();
+        vertVn.pop();
+        normals [vvn.first] += vertNormals[vvn.second];
     }
 
     for ( unsigned int i = 0; i < numVertices ; i ++) {
@@ -135,6 +127,10 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 		}
 		//Normal
 		else if(tokens[0]=="vn"){
+            //Recebe as coordenadas do vértice lido
+			x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
+
+            vertNormals.push_back(QVector3D (x,y,z));
 		}
 		//Texturas
 		else if(tokens[0]=="vt"){
@@ -149,13 +145,16 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
 				//Recebe os indices dos vértices, normais e texturas, respectivamente
 				v[j] = subTokens[0].toInt(); 
-				vn[j] = subTokens[1].toInt(); 
-				vt[j] = subTokens[2].toInt();
+				vt[j] = subTokens[1].toInt(); 
+				vn[j] = subTokens[2].toInt();
 
 				//Deve-se subtrair em 1, pois os índices se iniciam em 1
 				v[j]--;
-				vn[j]--;
 				vt[j]--;
+				vn[j]--;
+
+                //Adiciona o vn para o respectivo vertice da face
+                vertVn.push({v[j],vn[j]}); 
 		  	}
 
 			//Adiciona os indices dos vértices no vetor de índices
@@ -169,17 +168,22 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
 		    if(subTokens.size()==3){
 		        //Recebe o quarto ponto que forma a face
-		        v[3] = subTokens[0].toDouble(); vn[3] = subTokens[1].toDouble(); vt[3] = subTokens[2].toDouble();
+		        v[3] = subTokens[0].toInt(); 
+                vt[3] = subTokens[1].toInt(); 
+                vn[3] = subTokens[2].toInt();
 
 		        numFaces++;
 		        v[3]--;
-		        vn[3]--;
 		        vt[3]--;
+		        vn[3]--;
 
 		        //Adiciona os índices de modo que o quadrilátero seja lido como dois triângulos
 		        indices.push_back(v[0]);
 		        indices.push_back(v[2]);
 		        indices.push_back(v[3]);
+
+                //Adiciona o vn para o respectivo vertice da face
+                vertVn.push({v[3],vn[3]}); 
 		    }
 		  }
 		}
@@ -192,6 +196,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
   	//Calculo da maior distância entre dois pontos no objeto
   	invdiag = 1 / ( max - min ). length ();
 
+    
 	//Fecha o arquivo que foi aberto
   	stream.close();
 }
@@ -308,13 +313,12 @@ void GLWidget :: paintGL ()
     modelViewMatrix.setToIdentity ();
     modelViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
     modelViewMatrix.translate (0, 0, zoom );
+    modelViewMatrix.rotate ( trackBall.getRotation ());
 
     //Realizacao da escala do objeto
     modelViewMatrix.scale(invdiag,invdiag,invdiag);
     //Realizacao da translação do objeto
     modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
-
-    modelViewMatrix.rotate ( trackBall.getRotation ());
 
     shaderProgram -> bind ();
 

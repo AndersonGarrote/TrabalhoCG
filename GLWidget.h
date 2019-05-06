@@ -4,6 +4,7 @@
 #include <QtOpenGL>
 
 #include <iostream>
+#include <bits/stdc++.h>
 #include <fstream>
 #include <limits>
 
@@ -11,6 +12,8 @@
 #include "Light.h"
 #include "Material.h"
 #include "TrackBall.h"
+
+typedef std::pair<int, double> intDoub;
 
 class GLWidget : public QGLWidget
 {
@@ -48,6 +51,8 @@ private:
     unsigned int numFaces ;
 
     std::vector<QVector4D> vertices;
+    std::queue<intDoub> vertVn;
+    std::vector<QVector3D> vertNormals;
     QVector4D midpoint;
     double invdiag;
     QVector3D * normals ;
