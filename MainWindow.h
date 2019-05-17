@@ -26,6 +26,10 @@ public:
 private slots:
     void on_actionSair_triggered();
 
+    void on_actionZoom_in_triggered();
+
+    void on_actionZoom_out_triggered();
+
 private:
     Ui::MainWindow *ui;
 
