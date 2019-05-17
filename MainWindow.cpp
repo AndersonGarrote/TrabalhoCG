@@ -27,3 +27,8 @@ void MainWindow::on_actionZoom_out_triggered()
 {
     ui->glwidget->zoomOut();
 }
+
+void MainWindow::on_actionWiki_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/AndersonGarrote/TrabalhoCG/wiki"));
+}

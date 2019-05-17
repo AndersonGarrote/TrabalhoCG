@@ -30,6 +30,8 @@ private slots:
 
     void on_actionZoom_out_triggered();
 
+    void on_actionWiki_triggered();
+
 private:
     Ui::MainWindow *ui;
 
