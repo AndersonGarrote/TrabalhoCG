@@ -34,7 +34,7 @@ void GLWidget :: showObj ()
 	//Funcao para exibir o objeto na tela
     if (flagAbertura == 1) {
 		flagAbertura = 0;
-		QString fileName = "lego.obj";
+        QString fileName = "jooj.obj";
         readOBJFile ( fileName ); //funcao para leitura do arquivo obj
 
         genNormals ();
@@ -50,7 +50,7 @@ void GLWidget :: genNormals ()
     delete [] normals ;
     normals = new QVector3D [numVertices];
     intDoub vvn;
-    
+
     while(!vertVn.empty()){
         vvn= vertVn.front();
         vertVn.pop();
@@ -64,10 +64,10 @@ void GLWidget :: genNormals ()
 
 void GLWidget :: readOBJFile ( const QString & fileName )
 {
-	//Funcao para a leitura de um arquivo .obj 
+	//Funcao para a leitura de um arquivo .obj
 	//Os dados extraidos do arquivo sao armazenados nas estruturas de dados desse programa
 	std :: ifstream stream ;
-	
+
 	//Abertura do arquivo
 	stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
 
@@ -92,7 +92,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
 	//Enquanto o arquivo não acabar
 	while(!stream.eof()){
-		
+
 		//Lê uma linha do arquivo
 		stream.getline(linhaChar,2048,'\n');
 		QString linha(linhaChar);
@@ -104,8 +104,8 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 		tokens.removeAll("");
 
 		//Caso a linha lida não seja um comentário e não esteja vazia
-		if(linha[0]!='#'&&tokens.size()>1){ 
-				
+		if(linha[0]!='#'&&tokens.size()>1){
+
 		//Vertices
 		if(tokens[0]=="v"){
 			numVertices++;
@@ -114,12 +114,12 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 			x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
 
 			//Calculo das coordenadas máximas e mínimas do objeto
-			max . setX ( qMax ((double) max .x() , x));
-			max . setY ( qMax ((double) max .y() , y));
-			max . setZ ( qMax ((double) max .z() , z));
-			min . setX ( qMin ((double) min .x() , x));
-			min . setY ( qMin ((double) min .y() , y));
-			min . setZ ( qMin ((double) min .z() , z));
+            max . setX ( qMax ( max .x() , x));
+            max . setY ( qMax ( max .y() , y));
+            max . setZ ( qMax ( max .z() , z));
+            min . setX ( qMin ( min .x() , x));
+            min . setY ( qMin ( min .y() , y));
+            min . setZ ( qMin ( min .z() , z));
 
 			//Adiciona o vértice ao vetor de vértices
 			vertices.push_back(QVector4D (x, y, z, 1.0));
@@ -137,15 +137,15 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 		}
 		//Faces
 		else if(tokens[0]=="f"){
-			
+
 		  	numFaces++;
 			for (size_t j = 0; j < 3; j++) {
 				//Divisão dos tokens em subtokens para a obtenção dos índices de vértices que formam as faces
 				QStringList subTokens = tokens[j+1].split('/');
 
 				//Recebe os indices dos vértices, normais e texturas, respectivamente
-				v[j] = subTokens[0].toInt(); 
-				vt[j] = subTokens[1].toInt(); 
+				v[j] = subTokens[0].toInt();
+				vt[j] = subTokens[1].toInt();
 				vn[j] = subTokens[2].toInt();
 
 				//Deve-se subtrair em 1, pois os índices se iniciam em 1
@@ -154,7 +154,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 				vn[j]--;
 
                 //Adiciona o vn para o respectivo vertice da face
-                vertVn.push({v[j],vn[j]}); 
+                vertVn.push({v[j],vn[j]});
 		  	}
 
 			//Adiciona os indices dos vértices no vetor de índices
@@ -168,8 +168,8 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 
 		    if(subTokens.size()==3){
 		        //Recebe o quarto ponto que forma a face
-		        v[3] = subTokens[0].toInt(); 
-                vt[3] = subTokens[1].toInt(); 
+		        v[3] = subTokens[0].toInt();
+                vt[3] = subTokens[1].toInt();
                 vn[3] = subTokens[2].toInt();
 
 		        numFaces++;
@@ -183,7 +183,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
 		        indices.push_back(v[3]);
 
                 //Adiciona o vn para o respectivo vertice da face
-                vertVn.push({v[3],vn[3]}); 
+                vertVn.push({v[3],vn[3]});
 		    }
 		  }
 		}
@@ -196,7 +196,7 @@ void GLWidget :: readOBJFile ( const QString & fileName )
   	//Calculo da maior distância entre dois pontos no objeto
   	invdiag = 1 / ( max - min ). length ();
 
-    
+
 	//Fecha o arquivo que foi aberto
   	stream.close();
 }
@@ -427,4 +427,19 @@ void GLWidget :: keyPressEvent ( QKeyEvent * event )
 
     updateGL();
 
+}
+
+void GLWidget::zoomIn()
+{
+    zoom += 0.1;
+
+    updateGL();
+}
+
+
+void GLWidget::zoomOut()
+{
+    zoom -= 0.1;
+
+    updateGL();
 }
