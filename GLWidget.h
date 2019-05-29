@@ -22,6 +22,8 @@ public :
     explicit GLWidget (QWidget * parent);
     virtual ~GLWidget ();
 
+    void zoomIn();
+    void zoomOut();
 protected :
     void initializeGL ();
     void resizeGL ( int width , int height );
