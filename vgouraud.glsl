@@ -18,6 +18,7 @@ void main ()
 {
         vec4 eyePosition = modelViewMatrix * vPosition ;
         gl_Position = projectionMatrix * eyePosition ;
+
         vec3 N = normalize( normalMatrix * vNormal );
         vec3 L = normalize( lightPosition.xyz - eyePosition.xyz );
         vec3 E = normalize( - eyePosition.xyz );
