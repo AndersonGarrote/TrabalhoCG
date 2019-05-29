@@ -34,7 +34,7 @@ void GLWidget :: showObj ()
 	//Funcao para exibir o objeto na tela
     if (flagAbertura == 1) {
 		flagAbertura = 0;
-        QString fileName = "jooj.obj";
+        QString fileName = "./objFiles/boneco/boneco.obj";
         readOBJFile ( fileName ); //funcao para leitura do arquivo obj
 
         genNormals ();
