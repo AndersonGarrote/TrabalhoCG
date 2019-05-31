@@ -32,6 +32,10 @@ private slots:
 
     void on_actionWiki_triggered();
 
+    void on_actionCamera_1_triggered();
+
+    void on_actionCamera_2_triggered();
+
 private:
     Ui::MainWindow *ui;
 

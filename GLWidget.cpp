@@ -19,7 +19,11 @@ GLWidget :: GLWidget ( QWidget * parent) :
 
     currentShader = 0;
 	flagAbertura = 1;
-}
+
+    cameras.push_back(camera);
+    cameras.push_back(camera);
+    cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (-0.5 , 0.0 , 0.0), QVector3D (0.0 , 1.0 , 0.0));
+    }
 
 GLWidget ::~GLWidget ()
 {
@@ -440,6 +444,13 @@ void GLWidget::zoomIn()
 void GLWidget::zoomOut()
 {
     zoom -= 0.1;
+
+    updateGL();
+}
+
+void GLWidget::changeCamera(unsigned long i)
+{
+    camera.setCamera(cameras[i].eye, cameras[i].at, cameras[i].up);
 
     updateGL();
 }

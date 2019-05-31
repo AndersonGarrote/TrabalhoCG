@@ -8,7 +8,9 @@ class Camera
 public :
     Camera ();
 
-    QVector3D eye ;
+    void setCamera(QVector3D eye, QVector3D at, QVector3D up);
+
+    QVector3D eye;
     QVector3D at;
     QVector3D up;
 };

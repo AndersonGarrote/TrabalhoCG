@@ -32,3 +32,13 @@ void MainWindow::on_actionWiki_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/AndersonGarrote/TrabalhoCG/wiki"));
 }
+
+void MainWindow::on_actionCamera_1_triggered()
+{
+    ui->glwidget->changeCamera(0);
+}
+
+void MainWindow::on_actionCamera_2_triggered()
+{
+    ui->glwidget->changeCamera(1);
+}

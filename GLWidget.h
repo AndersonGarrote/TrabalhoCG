@@ -24,6 +24,7 @@ public :
 
     void zoomIn();
     void zoomOut();
+    void changeCamera(unsigned long i);
 protected :
     void initializeGL ();
     void resizeGL ( int width , int height );
@@ -62,7 +63,8 @@ private:
 
     QMatrix4x4 modelViewMatrix ;
     QMatrix4x4 projectionMatrix ;
-    Camera camera ;
+    Camera camera;
+    std::vector<Camera> cameras;
     Light light ;
     Material material ;
     TrackBall trackBall ;
