@@ -1,10 +1,7 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include <QtOpenGL>
 
-#include <iostream>
-#include <bits/stdc++.h>
 #include <fstream>
 #include <limits>
 
@@ -42,24 +39,16 @@ public slots :
     void showObj ();
 
 private:
-    void readOBJFile ( const QString & fileName );
+    
 
     void createVBOs ();
-    void genNormals ();
     void updateBuffers();
 
     unsigned int currentShader ;
 
-    unsigned int numVertices ;
-    unsigned int numFaces ;
 
-    std::vector<QVector4D> vertices;
-    std::queue<intDoub> vertVn;
-    std::vector<QVector3D> vertNormals;
-    QVector4D midpoint;
-    double invdiag;
-    QVector3D * normals ;
-    std::vector<unsigned int> indices ;
+
+
 
     QMatrix4x4 modelViewMatrix ;
     QMatrix4x4 projectionMatrix ;
@@ -73,8 +62,7 @@ private:
     QGLBuffer * vboVertices ;
     QGLBuffer * vboNormals ;
     QGLBuffer * vboIndices;
-    int _numFaces;
-    int _numVertices;
+
 
     QGLShaderProgram * shaderProgram ;
     QGLShader * vertexShader ;
