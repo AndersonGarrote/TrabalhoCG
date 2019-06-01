@@ -57,6 +57,7 @@ void GLWidget :: paintGL ()
     objetos[0].setMaterial(material);
     objetos[0].setLight(light);
     objetos[0].setPosition(0.0,32.0,0.0);
+    objetos[0].setScale(0.25,0.25,0.25);
 	objetos[0].paintGL();
 
     objetos[1].setModelViewMatrix(modelViewMatrix);

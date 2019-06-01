@@ -298,6 +298,11 @@ void Objeto :: setPosition(double x, double y, double z){
     posZ = z;
 }
 
+void Objeto::setScale(double x, double y, double z)
+{
+    modelViewMatrix.scale(x,y,z);
+}
+
 void Objeto :: paintGL ()
 {
 	//Funcao para exibir o objeto na tela
@@ -306,8 +311,6 @@ void Objeto :: paintGL ()
 
     if (! vboVertices )
      return ;
-
-	
 
     //Realizacao da escala do objeto
     modelViewMatrix.scale(invdiag/2,invdiag/2,invdiag/2);

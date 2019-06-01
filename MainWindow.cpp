@@ -42,3 +42,5 @@ void MainWindow::on_actionCamera_2_triggered()
 {
     ui->glwidget->changeCamera(1);
 }
+
+

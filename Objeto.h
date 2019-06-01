@@ -28,6 +28,7 @@ public :
     void setMaterial(Material mat);
     void setLight(Light li);
     void setPosition(double x, double y, double z);
+    void setScale(double x, double y, double z);
 
 private :
     unsigned int numVertices;
@@ -43,6 +44,7 @@ private :
     double posX, posY, posZ;
 
     double invdiag;
+
     QMatrix4x4 modelViewMatrix ;
     QMatrix4x4 projectionMatrix ;
 
