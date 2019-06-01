@@ -1,16 +1,16 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-
+#include <QtOpenGL>
 #include <fstream>
 #include <limits>
-
+/*
 #include "Camera.h"
 #include "Light.h"
 #include "Material.h"
-#include "TrackBall.h"
+#include "TrackBall.h"*/
+#include "Objeto.h"
 
-typedef std::pair<int, double> intDoub;
 
 class GLWidget : public QGLWidget
 {
@@ -22,6 +22,8 @@ public :
     void zoomIn();
     void zoomOut();
     void changeCamera(unsigned long i);
+
+    
 protected :
     void initializeGL ();
     void resizeGL ( int width , int height );
@@ -41,41 +43,22 @@ public slots :
 private:
     
 
-    void createVBOs ();
-    void updateBuffers();
+    
+    //void updateBuffers();
 
-    unsigned int currentShader ;
-
-
-
-
-
-    QMatrix4x4 modelViewMatrix ;
-    QMatrix4x4 projectionMatrix ;
+    
+    Objeto *objetos; 
+    double zoom;
     Camera camera;
+    
     std::vector<Camera> cameras;
     Light light ;
     Material material ;
     TrackBall trackBall ;
-    double zoom ;
+
 	int flagAbertura;
-    QGLBuffer * vboVertices ;
-    QGLBuffer * vboNormals ;
-    QGLBuffer * vboIndices;
 
-
-    QGLShaderProgram * shaderProgram ;
-    QGLShader * vertexShader ;
-    QGLShader * fragmentShader ;
-
-
-    void createShaders ();
-    void destroyShaders ();
-
-
-    void destroyVBOs ();
-
-    void updateView();
+    //void updateView();
 };
 
 #endif // GLWIDGET_H
