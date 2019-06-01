@@ -16,14 +16,13 @@ class Objeto
 public :
     Objeto ();
     ~Objeto ();
-    void paintGL ();
+    void paintGL (QMatrix4x4 projectionMatrix);
     void readOBJFile ( const QString & fileName );
     void genNormals ();
     void createVBOs ();
     void destroyVBOs ();
     void createShaders ();
     void destroyShaders ();
-    void resizeGL ( int width , int height );
     void setModelViewMatrix( QMatrix4x4 matrix);
     void setMaterial(Material mat);
     void setLight(Light li);
@@ -41,25 +40,20 @@ private :
     std::vector<QVector3D> vertNormals;
     std::queue<intDoub> vertVn;
     QVector3D * normals ;
-
+    
     QVector4D midpoint;
     double posX, posY, posZ;
-
     double invdiag;
 
     QMatrix4x4 modelViewMatrix ;
-    QMatrix4x4 projectionMatrix ;
-
     QGLBuffer * vboVertices ;
     QGLBuffer * vboNormals ;
     QGLBuffer * vboIndices;
-
     QGLShaderProgram * shaderProgram ;
     QGLShader * vertexShader ;
     QGLShader * fragmentShader ;
     Light light ;
     Material material ;
-    //TrackBall trackBall ;
 };
 
 #endif // OBJETO_H

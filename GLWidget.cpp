@@ -11,7 +11,6 @@ GLWidget :: GLWidget ( QWidget * parent) :
     cameras.push_back(camera);
     cameras.push_back(camera);
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (-0.5 , 0.0 , 0.0), QVector3D (0.0 , 1.0 , 0.0));
-
 }
 
 GLWidget ::~GLWidget ()
@@ -19,19 +18,20 @@ GLWidget ::~GLWidget ()
 	delete[] objetos;
 }
 
-
 void GLWidget :: showObj ()
 {
 	//Funcao para exibir o objeto na tela
     if (flagAbertura == 1) {
 		flagAbertura = 0;
 
+        //Gerar o primeiro objeto
         QString fileName = "./objFiles/boneco/boneco.obj";
         objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
         objetos[0].genNormals ();
         objetos[0].createVBOs ();
         objetos[0].createShaders ();
 
+        //Gerar o segundo objeto
         fileName = "./objFiles/chao/chao16x16.obj";
         objetos[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
         objetos[1].genNormals ();
@@ -42,14 +42,13 @@ void GLWidget :: showObj ()
     }
 }
 
-
-
-
 void GLWidget :: paintGL ()
 {
+    //Limpando a tela 
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
     //Configuracao da matriz
-    QMatrix4x4 modelViewMatrix ;
+    QMatrix4x4 modelViewMatrix ; //Matriz auxiliar
     modelViewMatrix.setToIdentity ();
     modelViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
     modelViewMatrix.translate (0, 0, zoom );
@@ -58,19 +57,20 @@ void GLWidget :: paintGL ()
     objetos[0].setModelViewMatrix(modelViewMatrix);
     objetos[0].setMaterial(material);
     objetos[0].setLight(light);
+
     objetos[0].setTranslation(playerPos.x(),0.0,playerPos.z());
     objetos[0].setRotation(playerRot.y(),0,1,0);
     objetos[0].setScale(0.25,0.25,0.25);
-    objetos[0].setPosition(0.0,32.0,0.0);
-    objetos[0].paintGL();
+
+    objetos[0].setPosition(0.0, 32.0, 0.0);
+    objetos[0].paintGL(projectionMatrix);
 
     objetos[1].setModelViewMatrix(modelViewMatrix);
     objetos[1].setMaterial(material);
     objetos[1].setLight(light);
-    objetos[1].setPosition(0.0,0.0,0.0);
-    objetos[1].paintGL();
+    objetos[1].setPosition(0.0, 0.0, 0.0);
+    objetos[1].paintGL(projectionMatrix);
 }
-
 
 void GLWidget :: initializeGL ()
 {
@@ -81,18 +81,20 @@ void GLWidget :: initializeGL ()
 	showObj();
 }
 
-
 void GLWidget :: resizeGL ( int width , int height )
 {
     makeCurrent();
-    objetos[0].resizeGL(width, height);
-    objetos[1].resizeGL(width, height);
+    glViewport (0, 0, width , height );
+    projectionMatrix.setToIdentity ();
+    projectionMatrix.perspective (60.0 ,
+                                  static_cast <qreal >( width ) /
+                                  static_cast <qreal >( height ), 0.1 , 20.0) ;
+
     trackBall.resizeViewport (width , height );
     updateGL();
 }
 
 /* Funcoes para tratar eventos de mouse */
-
 void GLWidget :: mouseMoveEvent ( QMouseEvent * event )
 {
     trackBall.mouseMove (event -> pos ());
@@ -118,7 +120,6 @@ void GLWidget :: mouseReleaseEvent ( QMouseEvent * event )
 
 void GLWidget :: wheelEvent ( QWheelEvent * event )
 {
-
     zoom += 0.0001 * event -> delta ();
 
     updateGL();
@@ -179,5 +180,4 @@ void GLWidget::interact(bool * keyDirection)
     playerRot.setY(playerRot.y()+20.0*( sinX * sinX + sinZ * sinZ )-10.0);
 
     updateGL();
-
 }

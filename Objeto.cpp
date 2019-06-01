@@ -159,13 +159,13 @@ void Objeto :: readOBJFile ( const QString & fileName )
   	//Calculo da maior distância entre dois pontos no objeto
   	invdiag = 1 / ( max - min ). length ();
 
-
 	//Fecha o arquivo que foi aberto
   	stream.close();
 }
 
 void Objeto :: genNormals ()
 {
+    //Funcao para gerar as normais baseado nos vn informado pelo arquivo obj
     delete [] normals ;
     normals = new QVector3D [numVertices];
     intDoub vvn;
@@ -313,20 +313,17 @@ void Objeto::setScale(double x, double y, double z)
     modelViewMatrix.scale(x,y,z);
 }
 
-void Objeto :: paintGL ()
+void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
 {
 	//Funcao para exibir o objeto na tela
-
-    //glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    if (! vboVertices )
-     return ;
-
+    if (! vboVertices ){
+        return ;
+    }
+    
     //Realizacao da escala do objeto
     modelViewMatrix.scale(invdiag/2,invdiag/2,invdiag/2);
     //Realizacao da translação do objeto
     modelViewMatrix.translate (-midpoint.x()+posX,-midpoint.y()+posY,-midpoint.z()+posZ);
-    std::cout<<midpoint.x()<<" "<<midpoint.y()<<" "<<midpoint.z()<<std::endl;
     shaderProgram -> bind ();
 
 	//Atribuir os valores ao shader
@@ -364,15 +361,3 @@ void Objeto :: paintGL ()
     shaderProgram -> release ();
 }
 
-void Objeto :: resizeGL ( int width , int height )
-{
-    glViewport (0, 0, width , height );
-    projectionMatrix.setToIdentity ();
-    projectionMatrix.perspective (60.0 ,
-                                  static_cast <qreal >( width ) /
-                                  static_cast <qreal >( height ), 0.1 , 20.0) ;
-
-    //trackBall.resizeViewport (width , height );
-
-    //updateGL();
-}
