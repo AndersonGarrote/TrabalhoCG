@@ -8,8 +8,11 @@ GLWidget :: GLWidget ( QWidget * parent) :
     objetos = new Objeto[2];
 	flagAbertura = 1;
 
+    //Inicialização do vetor de câmeras
     cameras.push_back(camera);
     cameras.push_back(camera);
+
+    //Configurando posição da segunda câmera (câmera 1 configurada no construtor do objeto Camera)
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (-0.5 , 0.0 , 0.0), QVector3D (0.0 , 1.0 , 0.0));
 }
 
@@ -142,6 +145,7 @@ void GLWidget::zoomOut()
 
 void GLWidget::changeCamera(unsigned long i)
 {
+    //Configurando a câmera atual para a câmera i do vetor de câmeras
     camera.setCamera(cameras[i].eye, cameras[i].at, cameras[i].up);
 
     updateGL();
