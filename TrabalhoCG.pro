@@ -9,7 +9,7 @@ INCLUDEPATH += .
 QT += opengl
 
 # Input
-HEADERS += Camera.h GLWidget.h Light.h MainWindow.h Material.h TrackBall.h
+HEADERS += Camera.h GLWidget.h Light.h MainWindow.h Material.h Objeto.h TrackBall.h
 FORMS += mainwindow.ui
 SOURCES += Camera.cpp \
            GLWidget.cpp \
@@ -17,6 +17,7 @@ SOURCES += Camera.cpp \
            main.cpp \
            MainWindow.cpp \
            Material.cpp \
+           Objeto.cpp \
            TrackBall.cpp
 RESOURCES += resources.qrc
 

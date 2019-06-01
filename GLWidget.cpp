@@ -5,32 +5,18 @@ GLWidget :: GLWidget ( QWidget * parent) :
 {
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
-    vboVertices = nullptr;
-    vboNormals = nullptr;
-    vboIndices = nullptr;
-    normals = nullptr;
-    numFaces=0;
-    numVertices=0;
-
-    vertexShader = nullptr;
-    fragmentShader = nullptr;
-
-    shaderProgram = nullptr;
-
-    currentShader = 0;
+    objetos = new Objeto[2];
 	flagAbertura = 1;
 
     cameras.push_back(camera);
     cameras.push_back(camera);
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (-0.5 , 0.0 , 0.0), QVector3D (0.0 , 1.0 , 0.0));
 
-    }
+}
 
 GLWidget ::~GLWidget ()
 {
-	//Destrutor
-    destroyShaders ();
-    destroyVBOs ();
+	delete[] objetos;
 }
 
 
@@ -39,334 +25,50 @@ void GLWidget :: showObj ()
 	//Funcao para exibir o objeto na tela
     if (flagAbertura == 1) {
 		flagAbertura = 0;
+
         QString fileName = "./objFiles/boneco/boneco.obj";
-        readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[0].genNormals ();
+        objetos[0].createVBOs ();
+        objetos[0].createShaders ();
 
-        genNormals ();
-        createVBOs ();
-        createShaders ();
-        updateGL ();
+        fileName = "./objFiles/chao/chao16x16.obj";
+        objetos[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[1].genNormals ();
+        objetos[1].createVBOs ();
+        objetos[1].createShaders ();
+
+        paintGL();
     }
 }
 
 
-void GLWidget :: genNormals ()
-{
-    delete [] normals ;
-    normals = new QVector3D [numVertices];
-    intDoub vvn;
 
-    while(!vertVn.empty()){
-        vvn= vertVn.front();
-        vertVn.pop();
-        normals [vvn.first] += vertNormals[vvn.second];
-    }
-
-    for ( unsigned int i = 0; i < numVertices ; i ++) {
-        normals[i].normalize ();
-    }
-}
-
-void GLWidget :: readOBJFile ( const QString & fileName )
-{
-	//Funcao para a leitura de um arquivo .obj
-	//Os dados extraidos do arquivo sao armazenados nas estruturas de dados desse programa
-	std :: ifstream stream ;
-
-	//Abertura do arquivo
-	stream . open ( fileName . toLatin1 () , std :: ifstream :: in);
-
-	if (! stream . is_open ()) {
-		//Verifica se foi possivel abrir o arquivo
-	  	qWarning (" Cannot open file .");
-	  	return ;
-	}
-
-	//Cria variaveis auxiliares
-	char linhaChar[2048];
-	double x, y, z;
-	int v[4], vn[4], vt[4];
-	double minLim = std :: numeric_limits < double >:: min ();
-	double maxLim = std :: numeric_limits < double >:: max ();
-	QVector4D max ( minLim , minLim , minLim , 1.0) ;
-	QVector4D min ( maxLim , maxLim , maxLim , 1.0) ;
-
-	//Limpa os vector para armazenar os novos valores
-	vertices.clear();
-	indices.clear();
-
-	//Enquanto o arquivo não acabar
-	while(!stream.eof()){
-
-		//Lê uma linha do arquivo
-		stream.getline(linhaChar,2048,'\n');
-		QString linha(linhaChar);
-
-		//Separa a linha lida em tokens
-		QStringList tokens = linha.split(" ");
-
-		//Remove tokens vazios obtidos de espaçamento duplo
-		tokens.removeAll("");
-
-		//Caso a linha lida não seja um comentário e não esteja vazia
-		if(linha[0]!='#'&&tokens.size()>1){
-
-		//Vertices
-		if(tokens[0]=="v"){
-			numVertices++;
-
-			//Recebe as coordenadas do vértice lido
-			x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
-
-			//Calculo das coordenadas máximas e mínimas do objeto
-            max . setX ( qMax ( max .x() , x));
-            max . setY ( qMax ( max .y() , y));
-            max . setZ ( qMax ( max .z() , z));
-            min . setX ( qMin ( min .x() , x));
-            min . setY ( qMin ( min .y() , y));
-            min . setZ ( qMin ( min .z() , z));
-
-			//Adiciona o vértice ao vetor de vértices
-			vertices.push_back(QVector4D (x, y, z, 1.0));
-
-		}
-		//Normal
-		else if(tokens[0]=="vn"){
-            //Recebe as coordenadas do vértice lido
-			x = tokens[1].toDouble(); y = tokens[2].toDouble(); z = tokens[3].toDouble();
-
-            vertNormals.push_back(QVector3D (x,y,z));
-		}
-		//Texturas
-		else if(tokens[0]=="vt"){
-		}
-		//Faces
-		else if(tokens[0]=="f"){
-
-		  	numFaces++;
-			for (size_t j = 0; j < 3; j++) {
-				//Divisão dos tokens em subtokens para a obtenção dos índices de vértices que formam as faces
-				QStringList subTokens = tokens[j+1].split('/');
-
-				//Recebe os indices dos vértices, normais e texturas, respectivamente
-				v[j] = subTokens[0].toInt();
-				vt[j] = subTokens[1].toInt();
-				vn[j] = subTokens[2].toInt();
-
-				//Deve-se subtrair em 1, pois os índices se iniciam em 1
-				v[j]--;
-				vt[j]--;
-				vn[j]--;
-
-                //Adiciona o vn para o respectivo vertice da face
-                vertVn.push({v[j],vn[j]});
-		  	}
-
-			//Adiciona os indices dos vértices no vetor de índices
-			indices.push_back(v[0]);
-			indices.push_back(v[1]);
-			indices.push_back(v[2]);
-
-		  	if(tokens.size()>=5){
-		    	//Tenta dividir o ultimo ponto em subTokens
-		    	QStringList subTokens = tokens[4].split('/');
-
-		    if(subTokens.size()==3){
-		        //Recebe o quarto ponto que forma a face
-		        v[3] = subTokens[0].toInt();
-                vt[3] = subTokens[1].toInt();
-                vn[3] = subTokens[2].toInt();
-
-		        numFaces++;
-		        v[3]--;
-		        vt[3]--;
-		        vn[3]--;
-
-		        //Adiciona os índices de modo que o quadrilátero seja lido como dois triângulos
-		        indices.push_back(v[0]);
-		        indices.push_back(v[2]);
-		        indices.push_back(v[3]);
-
-                //Adiciona o vn para o respectivo vertice da face
-                vertVn.push({v[3],vn[3]});
-		    }
-		  }
-		}
-	  }
-  	}
-
-  	//Calculo do ponto central do objeto
-  	midpoint = ( min + max ) * 0.5;
-
-  	//Calculo da maior distância entre dois pontos no objeto
-  	invdiag = 1 / ( max - min ). length ();
-
-
-	//Fecha o arquivo que foi aberto
-  	stream.close();
-}
-
-void GLWidget :: createVBOs (  )
-{
-    destroyVBOs ();
-
-    vboVertices = new QGLBuffer( QGLBuffer :: VertexBuffer );
-    vboVertices -> create ();
-    vboVertices -> bind ();
-    vboVertices -> setUsagePattern ( QGLBuffer :: StaticDraw );
-    vboVertices -> allocate ( vertices.data() , numVertices * sizeof ( QVector4D ));
-
-    vertices.clear();
-
-    vboNormals = new QGLBuffer ( QGLBuffer :: VertexBuffer );
-    vboNormals -> create ();
-    vboNormals -> bind ();
-    vboNormals -> setUsagePattern ( QGLBuffer :: StaticDraw );
-    vboNormals -> allocate ( normals , numVertices * sizeof ( QVector3D ));
-
-    delete [] normals;
-    normals = NULL;
-
-    vboIndices = new QGLBuffer ( QGLBuffer :: IndexBuffer );
-    vboIndices -> create () ;
-    vboIndices -> bind () ;
-    vboIndices -> setUsagePattern ( QGLBuffer :: StaticDraw );
-    vboIndices -> allocate ( indices.data() , numFaces * 3 * sizeof ( unsigned int ));
-
-    indices.clear();
-}
-
-void GLWidget :: destroyVBOs ()
-{
-    if ( vboVertices ) {
-        vboVertices -> release ();
-        delete vboVertices ;
-        vboVertices = NULL ;
-    }
-
-    if ( vboNormals ) {
-        vboNormals -> release ();
-        delete vboNormals ;
-        vboNormals = NULL ;
-    }
-
-    if ( vboIndices ) {
-        vboIndices -> release ();
-        delete vboIndices ;
-        vboIndices = NULL ;
-    }
-}
-
-void GLWidget :: createShaders ()
-{
-	//Funcao para a criação dos shaders
-
-    destroyShaders (); //Primeiro destroi os shaders antigos
-
-	//Vincula os novos shaders
-    QString vertexShaderFile [] = {
-        ":/shaders/vgouraud.glsl",
-    };
-    QString fragmentShaderFile [] = {
-        ":/shaders/fgouraud.glsl",
-    };
-
-    vertexShader = new QGLShader( QGLShader::Vertex );
-    if (! vertexShader -> compileSourceFile ( vertexShaderFile [currentShader]))
-        qWarning () << vertexShader -> log ();
-
-    fragmentShader = new QGLShader ( QGLShader::Fragment);
-    if (! fragmentShader -> compileSourceFile (fragmentShaderFile [currentShader]))
-        qWarning () << fragmentShader -> log ();
-
-    shaderProgram = new QGLShaderProgram( ) ;
-    shaderProgram -> addShader ( vertexShader );
-    shaderProgram -> addShader ( fragmentShader );
-
-    if (! shaderProgram -> link ())
-        qWarning () << shaderProgram -> log () << endl ;
-}
-
-void GLWidget :: destroyShaders ()
-{
-	//Funcao para destruir os shaders antigos
-    if( vertexShader ) {
-        delete vertexShader ;
-        vertexShader = NULL ;
-    }
-    if( fragmentShader ) {
-        delete fragmentShader ;
-        fragmentShader = NULL ;
-    }
-    if ( shaderProgram ) {
-        shaderProgram -> release ();
-        delete shaderProgram ;
-        shaderProgram = NULL ;
-    }
-}
 
 void GLWidget :: paintGL ()
 {
-	//Funcao para exibir o objeto na tela
-
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    if (! vboVertices )
-     return ;
-
-	//Configuracao da matriz
+    //Configuracao da matriz
+    QMatrix4x4 modelViewMatrix ;
     modelViewMatrix.setToIdentity ();
     modelViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
     modelViewMatrix.translate (0, 0, zoom );
     modelViewMatrix.rotate ( trackBall.getRotation ());
 
+    objetos[0].setModelViewMatrix(modelViewMatrix);
+    objetos[0].setMaterial(material);
+    objetos[0].setLight(light);
+    objetos[0].setTranslation(playerPos.x(),0.0,playerPos.z());
+    objetos[0].setRotation(playerRot.y(),0,1,0);
+    objetos[0].setScale(0.25,0.25,0.25);
+    objetos[0].setPosition(0.0,32.0,0.0);
+    objetos[0].paintGL();
 
-    //Realização da rotação do objeto
-    modelViewMatrix.translate(playerPos.x(),0,playerPos.z());
-    modelViewMatrix.rotate(playerRot.x(),1,0,0);
-    modelViewMatrix.rotate(playerRot.y(),0,1,0);
-    modelViewMatrix.rotate(playerRot.z(),0,0,1);
-    //Realizacao da escala do objeto
-    modelViewMatrix.scale(invdiag,invdiag,invdiag);
-    //Realizacao da translação do objeto
-    modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
-
-
-    shaderProgram -> bind ();
-
-	//Atribuir os valores ao shader
-    shaderProgram -> setUniformValue ("modelViewMatrix", modelViewMatrix );
-    shaderProgram -> setUniformValue ("projectionMatrix", projectionMatrix );
-    shaderProgram -> setUniformValue("normalMatrix", modelViewMatrix.normalMatrix ());
-
-    QVector4D ambientProduct = light.ambient * material.ambient ;
-    QVector4D diffuseProduct = light.diffuse * material.diffuse ;
-    QVector4D specularProduct = light.specular * material.specular ;
-
-	//Atribuir os valores ao shader
-    shaderProgram -> setUniformValue ("lightPosition", light.position );
-    shaderProgram -> setUniformValue ("ambientProduct", ambientProduct );
-    shaderProgram -> setUniformValue ("diffuseProduct", diffuseProduct );
-    shaderProgram -> setUniformValue ("specularProduct", specularProduct );
-    shaderProgram -> setUniformValue ( "shininess", static_cast < GLfloat >( material.shininess ));
-
-    vboNormals -> bind ();
-	//Atribuir os valores ao shader
-    shaderProgram -> enableAttributeArray ("vNormal");
-    shaderProgram -> setAttributeBuffer ("vNormal", GL_FLOAT ,0, 3, 0);
-
-    vboVertices -> bind ();
-	//Atribuir os valores ao shader
-    shaderProgram -> enableAttributeArray ("vPosition");
-    shaderProgram -> setAttributeBuffer ("vPosition", GL_FLOAT ,0, 4, 0);
-
-    vboIndices -> bind ();
-    glDrawElements ( GL_TRIANGLES , numFaces * 3, GL_UNSIGNED_INT , 0);
-
-    vboIndices -> release ();
-    vboNormals -> release ();
-    vboVertices -> release ();
-    shaderProgram -> release ();
+    objetos[1].setModelViewMatrix(modelViewMatrix);
+    objetos[1].setMaterial(material);
+    objetos[1].setLight(light);
+    objetos[1].setPosition(0.0,0.0,0.0);
+    objetos[1].paintGL();
 }
 
 
@@ -383,15 +85,9 @@ void GLWidget :: initializeGL ()
 void GLWidget :: resizeGL ( int width , int height )
 {
     makeCurrent();
-
-    glViewport (0, 0, width , height );
-    projectionMatrix.setToIdentity ();
-    projectionMatrix.perspective (60.0 ,
-                                  static_cast <qreal >( width ) /
-                                  static_cast <qreal >( height ), 0.1 , 20.0) ;
-
+    objetos[0].resizeGL(width, height);
+    objetos[1].resizeGL(width, height);
     trackBall.resizeViewport (width , height );
-
     updateGL();
 }
 
@@ -427,16 +123,6 @@ void GLWidget :: wheelEvent ( QWheelEvent * event )
 
     updateGL();
 }
-
-void GLWidget::timerEvent(QTimerEvent *event)
-{
-     qDebug() << "Timer ID:" << event->timerId();
-    if(event->isAccepted()){
-        this->nextMove = true;
-    }
-
-}
-
 
 void GLWidget::zoomIn()
 {
@@ -482,20 +168,16 @@ void GLWidget::interact(bool * keyDirection)
 
     playerRot.setY(result/directions);
 
-    if(keyDirection[0]) playerPos.setZ(playerPos.z()-0.05);
-    if(keyDirection[1]) playerPos.setX(playerPos.x()-0.05);
-    if(keyDirection[2]) playerPos.setZ(playerPos.z()+0.05);
-    if(keyDirection[3]) playerPos.setX(playerPos.x()+0.05);
+    if(keyDirection[0]) playerPos.setZ(playerPos.z()-0.005);
+    if(keyDirection[1]) playerPos.setX(playerPos.x()-0.005);
+    if(keyDirection[2]) playerPos.setZ(playerPos.z()+0.005);
+    if(keyDirection[3]) playerPos.setX(playerPos.x()+0.005);
 
     double sinX = sin(playerPos.x()*50);
     double sinZ = sin(playerPos.z()*50);
 
     playerRot.setY(playerRot.y()+20.0*( sinX * sinX + sinZ * sinZ )-10.0);
 
-    //    qDebug() << "rotY:" << playerRot;
-
     updateGL();
 
 }
-
-
