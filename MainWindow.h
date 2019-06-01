@@ -36,9 +36,14 @@ private slots:
 
     void on_actionCamera_2_triggered();
 
+    void keyPressEvent(QKeyEvent * event);
+
+    void keyReleaseEvent(QKeyEvent * event);
+
 private:
     Ui::MainWindow *ui;
 
+    bool keyDirection[4];
 };
 
 #endif // MAINWINDOW_H

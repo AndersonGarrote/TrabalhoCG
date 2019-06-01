@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
         qWarning ("Multisample buffer is not supported .");
     QGLFormat :: setDefaultFormat ( format );
 
+
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

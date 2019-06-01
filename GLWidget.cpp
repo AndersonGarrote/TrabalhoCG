@@ -23,6 +23,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
     cameras.push_back(camera);
     cameras.push_back(camera);
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (-0.5 , 0.0 , 0.0), QVector3D (0.0 , 1.0 , 0.0));
+
     }
 
 GLWidget ::~GLWidget ()
@@ -319,10 +320,16 @@ void GLWidget :: paintGL ()
     modelViewMatrix.translate (0, 0, zoom );
     modelViewMatrix.rotate ( trackBall.getRotation ());
 
+
+    //Realização da rotação do objeto
+    modelViewMatrix.rotate(playerRot.x(),1,0,0);
+    modelViewMatrix.rotate(playerRot.y(),0,1,0);
+    modelViewMatrix.rotate(playerRot.z(),0,0,1);
     //Realizacao da escala do objeto
     modelViewMatrix.scale(invdiag,invdiag,invdiag);
     //Realizacao da translação do objeto
     modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
+
 
     shaderProgram -> bind ();
 
@@ -420,18 +427,6 @@ void GLWidget :: wheelEvent ( QWheelEvent * event )
     updateGL();
 }
 
-void GLWidget :: keyPressEvent ( QKeyEvent * event )
-{
-
-    switch (event ->key ())
-    {
-    case Qt :: Key_Escape :
-        qApp -> quit ();
-    }
-
-    updateGL();
-
-}
 
 void GLWidget::zoomIn()
 {
@@ -451,6 +446,16 @@ void GLWidget::zoomOut()
 void GLWidget::changeCamera(unsigned long i)
 {
     camera.setCamera(cameras[i].eye, cameras[i].at, cameras[i].up);
+
+    updateGL();
+}
+
+void GLWidget::interact(bool * keyDirection)
+{
+    if(keyDirection[0]) playerRot.setX(playerRot.x()-15.0);
+    if(keyDirection[1]) playerRot.setY(playerRot.y()-15.0);
+    if(keyDirection[2]) playerRot.setX(playerRot.x()+15.0);
+    if(keyDirection[3]) playerRot.setY(playerRot.y()+15.0);
 
     updateGL();
 }

@@ -1,4 +1,4 @@
-#ifndef GLWIDGET_H
+﻿#ifndef GLWIDGET_H
 #define GLWIDGET_H
 
 #include <QtOpenGL>
@@ -25,6 +25,8 @@ public :
     void zoomIn();
     void zoomOut();
     void changeCamera(unsigned long i);
+    void interact( bool * keyDirection );
+
 protected :
     void initializeGL ();
     void resizeGL ( int width , int height );
@@ -34,8 +36,6 @@ protected :
     void mousePressEvent ( QMouseEvent * event );
     void mouseReleaseEvent ( QMouseEvent * event );
     void wheelEvent ( QWheelEvent * event );
-    void keyPressEvent ( QKeyEvent * event );
-
 
 public slots :
 
@@ -76,18 +76,22 @@ private:
     int _numFaces;
     int _numVertices;
 
+    //Atributos de Interação
+    QVector3D playerRot;
+    QVector3D playerPos;
+
     QGLShaderProgram * shaderProgram ;
     QGLShader * vertexShader ;
     QGLShader * fragmentShader ;
 
-
     void createShaders ();
-    void destroyShaders ();
 
+    void destroyShaders ();
 
     void destroyVBOs ();
 
     void updateView();
+
 };
 
 #endif // GLWIDGET_H
