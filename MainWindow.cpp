@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    for (int i=0; i<4; i++)
+        keyDirection[i] = false;
+
      ui->setupUi(this);
 }
 
@@ -66,7 +69,6 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
         keyDirection[3] = true;
         break;
     }
-
     ui->glwidget->interact(keyDirection);
 }
 

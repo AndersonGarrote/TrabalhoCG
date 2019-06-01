@@ -37,6 +37,7 @@ protected :
     void mouseReleaseEvent ( QMouseEvent * event );
     void wheelEvent ( QWheelEvent * event );
 
+    void timerEvent(QTimerEvent *event) override;
 public slots :
 
     void showObj ();
@@ -79,6 +80,8 @@ private:
     //Atributos de Interação
     QVector3D playerRot;
     QVector3D playerPos;
+    int callBackTimer;
+    bool nextMove;
 
     QGLShaderProgram * shaderProgram ;
     QGLShader * vertexShader ;

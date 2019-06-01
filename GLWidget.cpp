@@ -322,6 +322,7 @@ void GLWidget :: paintGL ()
 
 
     //Realização da rotação do objeto
+    modelViewMatrix.translate(playerPos.x(),0,playerPos.z());
     modelViewMatrix.rotate(playerRot.x(),1,0,0);
     modelViewMatrix.rotate(playerRot.y(),0,1,0);
     modelViewMatrix.rotate(playerRot.z(),0,0,1);
@@ -427,6 +428,15 @@ void GLWidget :: wheelEvent ( QWheelEvent * event )
     updateGL();
 }
 
+void GLWidget::timerEvent(QTimerEvent *event)
+{
+     qDebug() << "Timer ID:" << event->timerId();
+    if(event->isAccepted()){
+        this->nextMove = true;
+    }
+
+}
+
 
 void GLWidget::zoomIn()
 {
@@ -452,10 +462,40 @@ void GLWidget::changeCamera(unsigned long i)
 
 void GLWidget::interact(bool * keyDirection)
 {
-    if(keyDirection[0]) playerRot.setX(playerRot.x()-15.0);
-    if(keyDirection[1]) playerRot.setY(playerRot.y()-15.0);
-    if(keyDirection[2]) playerRot.setX(playerRot.x()+15.0);
-    if(keyDirection[3]) playerRot.setY(playerRot.y()+15.0);
+    qreal result = 0.0, directions=0;
+    if(keyDirection[0]){
+        result+=180;
+        directions++;
+    }
+    if(keyDirection[1]) {
+        result+=270.0;
+        directions++;
+    }
+    if(keyDirection[2]){
+        result+=360.0;
+        directions++;
+    }
+    if(keyDirection[3]){
+        result+=90.0;
+        directions++;
+    }
+
+    playerRot.setY(result/directions);
+
+    if(keyDirection[0]) playerPos.setZ(playerPos.z()-0.05);
+    if(keyDirection[1]) playerPos.setX(playerPos.x()-0.05);
+    if(keyDirection[2]) playerPos.setZ(playerPos.z()+0.05);
+    if(keyDirection[3]) playerPos.setX(playerPos.x()+0.05);
+
+    double sinX = sin(playerPos.x()*50);
+    double sinZ = sin(playerPos.z()*50);
+
+    playerRot.setY(playerRot.y()+20.0*( sinX * sinX + sinZ * sinZ )-10.0);
+
+    //    qDebug() << "rotY:" << playerRot;
 
     updateGL();
+
 }
+
+
