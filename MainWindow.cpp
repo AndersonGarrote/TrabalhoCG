@@ -68,6 +68,9 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
     case Qt::Key_Right:
         keyDirection[3] = true;
         break;
+    case default:
+        return;
+    break
     }
     ui->glwidget->interact(keyDirection);
 }
