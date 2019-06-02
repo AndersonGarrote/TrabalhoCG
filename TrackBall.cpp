@@ -73,7 +73,7 @@ QQuaternion TrackBall :: getRotation ()
             rotation ;
 }
 
-void TrackBall::setRotation()
+void TrackBall::resetRotation()
 {
     QQuaternion r;
     rotation = r;
