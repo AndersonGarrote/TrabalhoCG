@@ -14,6 +14,9 @@ GLWidget :: GLWidget ( QWidget * parent) :
 
     //Configurando posição da segunda câmera (câmera 1 configurada no construtor do objeto Camera)
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (0.0 , 0.0 , 0.0), QVector3D (1.0 , 2.0 , 0.0));
+
+    //Configurando câera inicial
+    camera.setCAmera(cameras[0].eye, cameras[0].at, cameras[0].up);
 }
 
 GLWidget ::~GLWidget ()
@@ -64,7 +67,7 @@ void GLWidget :: paintGL ()
     //Configuracao da matriz do Mundo
     worldViewMatrix.setToIdentity ();
     worldViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
-    worldViewMatrix.translate (0, 0, zoom );
+    worldViewMatrix.translate (0, 0, 0 );
     worldViewMatrix.scale(4.0,4.0,4.0);
     worldViewMatrix.rotate ( trackBall.getRotation ());
 
@@ -133,14 +136,14 @@ void GLWidget :: mouseReleaseEvent ( QMouseEvent * event )
 
 void GLWidget :: wheelEvent ( QWheelEvent * event )
 {
-    zoom += 0.0001 * event -> delta ();
+    camera.zoom(0.0001 * event -> delta ());
 
     updateGL();
 }
 
 void GLWidget::zoomIn()
 {
-    zoom += 0.1;
+    camera.zoom(-0.1);
 
     updateGL();
 }
@@ -148,7 +151,7 @@ void GLWidget::zoomIn()
 
 void GLWidget::zoomOut()
 {
-    zoom -= 0.1;
+    camera.zoom(0.1);
 
     updateGL();
 }
