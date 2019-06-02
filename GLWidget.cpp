@@ -16,7 +16,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (0.0 , 0.0 , 0.0), QVector3D (1.0 , 2.0 , 0.0));
 
     //Configurando câera inicial
-    camera.setCAmera(cameras[0].eye, cameras[0].at, cameras[0].up);
+    camera.setCamera(cameras[0].eye, cameras[0].at, cameras[0].up);
 }
 
 GLWidget ::~GLWidget ()
@@ -35,7 +35,7 @@ void GLWidget :: showObj ()
         player.genNormals ();
         player.createVBOs ();
         player.createShaders ();
-        player.setPosition(0.0, 0.055, 0.0);
+        player.setPosition(0.0, 0.054, 0.0);
         player.setScale(0.25,0.25,0.25);
 
         //Gerar o primeiro objeto
@@ -67,7 +67,7 @@ void GLWidget :: paintGL ()
     //Configuracao da matriz do Mundo
     worldViewMatrix.setToIdentity ();
     worldViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
-    worldViewMatrix.translate (0, 0, 0 );
+    worldViewMatrix.translate (0, 0, 0);
     worldViewMatrix.scale(4.0,4.0,4.0);
     worldViewMatrix.rotate ( trackBall.getRotation ());
 
