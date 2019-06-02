@@ -16,6 +16,7 @@ public :
     void mouseRelease ( const QPointF & p);
     void resizeViewport ( int width , int height );
     QQuaternion getRotation ();
+    void resetRotation ();
 
 private :
     QQuaternion rotation ;

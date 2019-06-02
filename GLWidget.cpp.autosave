@@ -160,7 +160,7 @@ void GLWidget::changeCamera(unsigned long i)
 {
     //Configurando a câmera atual para a câmera i do vetor de câmeras
     camera.setCamera(cameras[i].eye, cameras[i].at, cameras[i].up);
-    trackBall.setRotation();
+    trackBall.resetRotation();
     updateGL();
 }
 

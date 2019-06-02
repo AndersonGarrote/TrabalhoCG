@@ -73,6 +73,12 @@ QQuaternion TrackBall :: getRotation ()
             rotation ;
 }
 
+void TrackBall::setRotation()
+{
+    QQuaternion r;
+    rotation = r;
+}
+
 QVector3D TrackBall :: mousePosTo3D ( const QPointF &p)
 {
     return QVector3D (2.0 * p.x() / viewportWidth - 1.0 ,
