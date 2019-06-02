@@ -32,7 +32,7 @@ void GLWidget :: showObj ()
         player.genNormals ();
         player.createVBOs ();
         player.createShaders ();
-        player.setPosition(0.0, 0.05, 0.0);
+        player.setPosition(0.0, 0.055, 0.0);
         player.setScale(0.25,0.25,0.25);
 
         //Gerar o primeiro objeto
