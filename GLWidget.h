@@ -32,8 +32,8 @@ public slots :
     void showObj ();
 
 private:
-    Player * player;
-    Objeto * objetos[2];
+    Player player;
+    Objeto * objetos;
     double zoom;
     Camera camera;
 
@@ -41,10 +41,10 @@ private:
     Light light ;
     Material material ;
     TrackBall trackBall ;
-	int flagAbertura;
-    QVector3D playerPos;
-    QVector3D playerRot;
-    QMatrix4x4 projectionMatrix ;
+    int flagAbertura;
+
+    QMatrix4x4 worldViewMatrix;
+    QMatrix4x4 projectionMatrix;
 };
 
 #endif // GLWIDGET_H

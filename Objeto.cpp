@@ -299,6 +299,20 @@ void Objeto :: setPosition(double x, double y, double z){
     posZ = z;
 }
 
+void Objeto::setRotation(double angle, double x, double y, double z)
+{
+    rotX = x*angle;
+    rotY = x*angle;
+    rotZ = x*angle;
+}
+
+void Objeto::setTranslation(double x, double y, double z)
+{
+    posX += x;
+    posY += y;
+    posZ += z;
+}
+
 void Objeto :: setScale(double x, double y, double z){
     scaX = x;
     scaY = y;

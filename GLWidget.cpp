@@ -5,8 +5,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
 {
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
-    player = new Player();
-    objetos[1] = new Objeto();
+    objetos = new Objeto[2];
 	flagAbertura = 1;
 
     //Inicialização do vetor de câmeras
@@ -19,10 +18,6 @@ GLWidget :: GLWidget ( QWidget * parent) :
 
 GLWidget ::~GLWidget ()
 {
-    for (int i=0;i<2;i++) {
-        if(objetos[i])
-            delete objetos[i];
-    }
 }
 
 void GLWidget :: showObj ()
@@ -31,22 +26,31 @@ void GLWidget :: showObj ()
     if (flagAbertura == 1) {
 		flagAbertura = 0;
 
-        //Gerar o primeiro objeto
+        //Gerar o player
         QString fileName = "./objFiles/boneco/boneco.obj";
-        player->readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        player->genNormals ();
-        player->createVBOs ();
-        player->createShaders ();
-        player->setPosition(0.0, 0.05, 0.0);
-        player->setScale(0.25,0.25,0.25);
+        player.readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        player.genNormals ();
+        player.createVBOs ();
+        player.createShaders ();
+        player.setPosition(0.0, 0.05, 0.0);
+        player.setScale(0.25,0.25,0.25);
+
+        //Gerar o primeiro objeto
+        fileName = "./objFiles/mobilia/mesinha.obj";
+        objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[0].genNormals ();
+        objetos[0].createVBOs ();
+        objetos[0].createShaders ();
+        objetos[0].setPosition(0.1, 0.05, 0.1);
+        objetos[0].setScale(0.25,0.25,0.25);
 
         //Gerar o segundo objeto
         fileName = "./objFiles/chao/chao16x16.obj";
-        objetos[1]->readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        objetos[1]->genNormals ();
-        objetos[1]->createVBOs ();
-        objetos[1]->createShaders ();
-        objetos[1]->setPosition(0.0, 0.0, 0.0);
+        objetos[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[1].genNormals ();
+        objetos[1].createVBOs ();
+        objetos[1].createShaders ();
+        objetos[1].setPosition(0.0, 0.0, 0.0);
 
         paintGL();
     }
@@ -57,23 +61,28 @@ void GLWidget :: paintGL ()
     //Limpando a tela 
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    //Configuracao da matriz
-    QMatrix4x4 worldViewMatrix ; //Matriz auxiliar
+    //Configuracao da matriz do Mundo
     worldViewMatrix.setToIdentity ();
     worldViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
     worldViewMatrix.translate (0, 0, zoom );
     worldViewMatrix.scale(4.0,4.0,4.0);
     worldViewMatrix.rotate ( trackBall.getRotation ());
 
-    player->setModelViewMatrix(worldViewMatrix);
-    player->setMaterial(material);
-    player->setLight(light);
-    player->paintGL(projectionMatrix);
+    //Colocando objetos no mundo
+    player.setModelViewMatrix(worldViewMatrix);
+    player.setMaterial(material);
+    player.setLight(light);
+    player.paintGL(projectionMatrix);
 
-    objetos[1]->setModelViewMatrix(worldViewMatrix);
-    objetos[1]->setMaterial(material);
-    objetos[1]->setLight(light);
-    objetos[1]->paintGL(projectionMatrix);
+    objetos[0].setModelViewMatrix(worldViewMatrix);
+    objetos[0].setMaterial(material);
+    objetos[0].setLight(light);
+    objetos[0].paintGL(projectionMatrix);
+
+    objetos[1].setModelViewMatrix(worldViewMatrix);
+    objetos[1].setMaterial(material);
+    objetos[1].setLight(light);
+    objetos[1].paintGL(projectionMatrix);
 }
 
 void GLWidget :: initializeGL ()
@@ -154,6 +163,6 @@ void GLWidget::changeCamera(unsigned long i)
 
 void GLWidget::interact(bool *keyDirection)
 {
-    player->move(keyDirection);
+    player.move(keyDirection);
     updateGL();
 }
