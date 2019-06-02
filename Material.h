@@ -11,6 +11,9 @@ public :
     QVector4D diffuse ;
     QVector4D specular ;
     double shininess ;
+
+public:
+    Material setMaterial(QString materialName);
 };
 
 # endif // MATERIAL_H

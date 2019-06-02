@@ -70,17 +70,17 @@ void GLWidget :: paintGL ()
 
     //Colocando objetos no mundo
     player.setModelViewMatrix(worldViewMatrix);
-    player.setMaterial(material);
+    player.setMaterial(material.setMaterial("yellow_plastic"));
     player.setLight(light);
     player.paintGL(projectionMatrix);
 
     objetos[0].setModelViewMatrix(worldViewMatrix);
-    objetos[0].setMaterial(material);
+    objetos[0].setMaterial(material.setMaterial("default"));
     objetos[0].setLight(light);
     objetos[0].paintGL(projectionMatrix);
 
     objetos[1].setModelViewMatrix(worldViewMatrix);
-    objetos[1].setMaterial(material);
+    objetos[1].setMaterial(material.setMaterial("green_plastic"));
     objetos[1].setLight(light);
     objetos[1].paintGL(projectionMatrix);
 }
@@ -90,7 +90,7 @@ void GLWidget :: initializeGL ()
 	//Funcao para inicializar o programa
     makeCurrent();
     glEnable ( GL_DEPTH_TEST );
-    glClearColor (0, 0, 0, 1);
+    glClearColor (0.8, 0.9, 1, 1);
 	showObj();
 }
 
