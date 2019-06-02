@@ -39,12 +39,12 @@ void GLWidget :: showObj ()
         player.setScale(0.25,0.25,0.25);
 
         //Gerar o primeiro objeto
-        fileName = "./objFiles/mobilia/mesinha.obj";
+        fileName = "./objFiles/outros/caixaA.obj";
         objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
         objetos[0].genNormals ();
         objetos[0].createVBOs ();
         objetos[0].createShaders ();
-        objetos[0].setPosition(0.1, 0.05, 0.1);
+        objetos[0].setPosition(0.1, 0.041, 0.1);
         objetos[0].setScale(0.25,0.25,0.25);
 
         //Gerar o segundo objeto
@@ -78,7 +78,7 @@ void GLWidget :: paintGL ()
     player.paintGL(projectionMatrix);
 
     objetos[0].setModelViewMatrix(worldViewMatrix);
-    objetos[0].setMaterial(material.setMaterial("default"));
+    objetos[0].setMaterial(material.setMaterial("brown_paper"));
     objetos[0].setLight(light);
     objetos[0].paintGL(projectionMatrix);
 

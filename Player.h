@@ -9,6 +9,9 @@ public:
 public:
 
     void move(bool *keyDirection);
+
+    QVector3D getPlayerPos();
+
 };
 
 #endif // PLAYER_H
