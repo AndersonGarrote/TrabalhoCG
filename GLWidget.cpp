@@ -15,7 +15,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
     //Configurando posição da segunda câmera (câmera 1 configurada no construtor do objeto Camera)
     cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (0.0 , 0.0 , 0.0), QVector3D (0.0 , 2.0 , -1.0));
 
-    //Configurando câera inicial
+    //Configurando camera inicial
     camera.setCamera(cameras[0].eye, cameras[0].at, cameras[0].up);
 }
 
