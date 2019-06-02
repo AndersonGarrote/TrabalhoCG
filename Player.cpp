@@ -42,3 +42,8 @@ void Player::move(bool * keyDirection)
     rotY = ( rotY + 20.0 * ( sinX * sinX + sinZ * sinZ ) - 10.0 );
 
 }
+
+QVector3D Player::getPlayerPos()
+{
+    return QVector3D(posX,posY,posZ);
+}

@@ -167,5 +167,9 @@ void GLWidget::changeCamera(unsigned long i)
 void GLWidget::interact(bool *keyDirection)
 {
     player.move(keyDirection);
+
+    camera.at.setX(player.getPlayerPos().x());
+    camera.at.setZ(player.getPlayerPos().z());
+
     updateGL();
 }
