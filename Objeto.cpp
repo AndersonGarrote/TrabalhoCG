@@ -302,8 +302,8 @@ void Objeto :: setPosition(double x, double y, double z){
 void Objeto::setRotation(double angle, double x, double y, double z)
 {
     rotX = x*angle;
-    rotY = x*angle;
-    rotZ = x*angle;
+    rotY = y*angle;
+    rotZ = z*angle;
 }
 
 void Objeto::setTranslation(double x, double y, double z)
