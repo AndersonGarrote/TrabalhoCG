@@ -19,4 +19,12 @@ void Camera :: setCamera(QVector3D eye, QVector3D at, QVector3D up) {
 
     this->up.setX(0.0); this->up.setY(0.0); this->up.setZ(0.0);    
     this->up += up;
+
+    this.posRelativa = this.eye - this.at;
+    this.posRelativa.normalize();
+}
+
+void Camera :: zoom(int zoom) {  
+    //Mudando a posição da câmera para mais próximo do objeto
+    this.eye += this.posRelativa * zoom;
 }

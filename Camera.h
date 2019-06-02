@@ -9,10 +9,12 @@ public :
     Camera ();
 
     void setCamera(QVector3D eye, QVector3D at, QVector3D up);
+    void zoom(int zoom);
 
     QVector3D eye;
     QVector3D at;
     QVector3D up;
+    QVector3D posRelativa;
 };
 
 
