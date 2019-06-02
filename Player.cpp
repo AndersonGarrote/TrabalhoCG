@@ -19,15 +19,17 @@ void Player::move(bool * keyDirection)
         directions++;
     }
     if(keyDirection[2]){
-        result+=360.0;
+        result+=0.0;
         directions++;
     }
     if(keyDirection[3]){
         result+=90.0;
         directions++;
     }
-
-    rotY = result/directions;
+    if(keyDirection[1] && keyDirection[2])//Ultimo quadrante, angulo oposto
+       rotY = 315.0;
+    else
+       rotY = result/directions;
 
     if(keyDirection[0]) posZ = ( posZ - 0.005 );
     if(keyDirection[1]) posX = ( posX - 0.005 );
