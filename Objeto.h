@@ -31,6 +31,10 @@ public :
     void setTranslation(double x, double y, double z);
     void setScale(double x, double y, double z);
 
+protected:
+    double posX, posY, posZ;
+    double rotX, rotY, rotZ;
+    double scaX, scaY, scaZ;
 private :
     unsigned int numVertices;
     unsigned int numFaces;
@@ -42,7 +46,6 @@ private :
     QVector3D * normals ;
     
     QVector4D midpoint;
-    double posX, posY, posZ;
     double invdiag;
 
     QMatrix4x4 modelViewMatrix ;

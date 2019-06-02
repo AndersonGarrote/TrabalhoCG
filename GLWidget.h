@@ -5,7 +5,7 @@
 #include <fstream>
 #include <limits>
 #include "Objeto.h"
-
+#include "Player.h"
 
 class GLWidget : public QGLWidget
 {
@@ -32,7 +32,8 @@ public slots :
     void showObj ();
 
 private:
-    Objeto *objetos;
+    Player * player;
+    Objeto * objetos[2];
     double zoom;
     Camera camera;
 

@@ -5,7 +5,8 @@ GLWidget :: GLWidget ( QWidget * parent) :
 {
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
-    objetos = new Objeto[2];
+    player = new Player();
+    objetos[1] = new Objeto();
 	flagAbertura = 1;
 
     //Inicialização do vetor de câmeras
@@ -13,12 +14,15 @@ GLWidget :: GLWidget ( QWidget * parent) :
     cameras.push_back(camera);
 
     //Configurando posição da segunda câmera (câmera 1 configurada no construtor do objeto Camera)
-    cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (-0.5 , 0.0 , 0.0), QVector3D (0.0 , 1.0 , 0.0));
+    cameras[1].setCamera(QVector3D (0.0 , 2.0 , 0.0), QVector3D (0.0 , 0.0 , 0.0), QVector3D (1.0 , 2.0 , 0.0));
 }
 
 GLWidget ::~GLWidget ()
 {
-	delete[] objetos;
+    for (int i=0;i<2;i++) {
+        if(objetos[i])
+            delete objetos[i];
+    }
 }
 
 void GLWidget :: showObj ()
@@ -29,17 +33,20 @@ void GLWidget :: showObj ()
 
         //Gerar o primeiro objeto
         QString fileName = "./objFiles/boneco/boneco.obj";
-        objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        objetos[0].genNormals ();
-        objetos[0].createVBOs ();
-        objetos[0].createShaders ();
+        player->readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        player->genNormals ();
+        player->createVBOs ();
+        player->createShaders ();
+        player->setPosition(0.0, 0.05, 0.0);
+        player->setScale(0.25,0.25,0.25);
 
         //Gerar o segundo objeto
         fileName = "./objFiles/chao/chao16x16.obj";
-        objetos[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        objetos[1].genNormals ();
-        objetos[1].createVBOs ();
-        objetos[1].createShaders ();
+        objetos[1]->readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[1]->genNormals ();
+        objetos[1]->createVBOs ();
+        objetos[1]->createShaders ();
+        objetos[1]->setPosition(0.0, 0.0, 0.0);
 
         paintGL();
     }
@@ -51,28 +58,22 @@ void GLWidget :: paintGL ()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     //Configuracao da matriz
-    QMatrix4x4 modelViewMatrix ; //Matriz auxiliar
-    modelViewMatrix.setToIdentity ();
-    modelViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
-    modelViewMatrix.translate (0, 0, zoom );
-    modelViewMatrix.rotate ( trackBall.getRotation ());
+    QMatrix4x4 worldViewMatrix ; //Matriz auxiliar
+    worldViewMatrix.setToIdentity ();
+    worldViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
+    worldViewMatrix.translate (0, 0, zoom );
+    worldViewMatrix.scale(4.0,4.0,4.0);
+    worldViewMatrix.rotate ( trackBall.getRotation ());
 
-    objetos[0].setModelViewMatrix(modelViewMatrix);
-    objetos[0].setMaterial(material);
-    objetos[0].setLight(light);
+    player->setModelViewMatrix(worldViewMatrix);
+    player->setMaterial(material);
+    player->setLight(light);
+    player->paintGL(projectionMatrix);
 
-    objetos[0].setTranslation(playerPos.x(),0.0,playerPos.z());
-    objetos[0].setRotation(playerRot.y(),0,1,0);
-    objetos[0].setScale(0.25,0.25,0.25);
-
-    objetos[0].setPosition(0.0, 32.0, 0.0);
-    objetos[0].paintGL(projectionMatrix);
-
-    objetos[1].setModelViewMatrix(modelViewMatrix);
-    objetos[1].setMaterial(material);
-    objetos[1].setLight(light);
-    objetos[1].setPosition(0.0, 0.0, 0.0);
-    objetos[1].paintGL(projectionMatrix);
+    objetos[1]->setModelViewMatrix(worldViewMatrix);
+    objetos[1]->setMaterial(material);
+    objetos[1]->setLight(light);
+    objetos[1]->paintGL(projectionMatrix);
 }
 
 void GLWidget :: initializeGL ()
@@ -151,37 +152,8 @@ void GLWidget::changeCamera(unsigned long i)
     updateGL();
 }
 
-void GLWidget::interact(bool * keyDirection)
+void GLWidget::interact(bool *keyDirection)
 {
-    qreal result = 0.0, directions=0;
-    if(keyDirection[0]){
-        result+=180;
-        directions++;
-    }
-    if(keyDirection[1]) {
-        result+=270.0;
-        directions++;
-    }
-    if(keyDirection[2]){
-        result+=360.0;
-        directions++;
-    }
-    if(keyDirection[3]){
-        result+=90.0;
-        directions++;
-    }
-
-    playerRot.setY(result/directions);
-
-    if(keyDirection[0]) playerPos.setZ(playerPos.z()-0.005);
-    if(keyDirection[1]) playerPos.setX(playerPos.x()-0.005);
-    if(keyDirection[2]) playerPos.setZ(playerPos.z()+0.005);
-    if(keyDirection[3]) playerPos.setX(playerPos.x()+0.005);
-
-    double sinX = sin(playerPos.x()*50);
-    double sinZ = sin(playerPos.z()*50);
-
-    playerRot.setY(playerRot.y()+20.0*( sinX * sinX + sinZ * sinZ )-10.0);
-
+    player->move(keyDirection);
     updateGL();
 }

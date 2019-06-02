@@ -13,9 +13,10 @@ Objeto :: Objeto ()
     vertexShader = nullptr;
     fragmentShader = nullptr;
     shaderProgram = nullptr;
-    posX = 0;
-    posY = 0;
-    posZ = 0; 
+
+    posX = 0; posY = 0; posZ = 0;
+    rotX = 0; rotY = 0; rotZ = 0;
+    scaX = 1; scaY = 1; scaZ = 1;
 }
 
 Objeto ::~Objeto ()
@@ -298,19 +299,10 @@ void Objeto :: setPosition(double x, double y, double z){
     posZ = z;
 }
 
-void Objeto::setRotation(double angle, double x, double y, double z)
-{
-    modelViewMatrix.rotate(angle,x,y,z);
-}
-
-void Objeto::setTranslation(double x, double y, double z)
-{
-    modelViewMatrix.translate(x,y,z);
-}
-
-void Objeto::setScale(double x, double y, double z)
-{
-    modelViewMatrix.scale(x,y,z);
+void Objeto :: setScale(double x, double y, double z){
+    scaX = x;
+    scaY = y;
+    scaZ = z;
 }
 
 void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
@@ -319,11 +311,17 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
     if (! vboVertices ){
         return ;
     }
-    
-    //Realizacao da escala do objeto
-    modelViewMatrix.scale(invdiag/2,invdiag/2,invdiag/2);
+
     //Realizacao da translação do objeto
-    modelViewMatrix.translate (-midpoint.x()+posX,-midpoint.y()+posY,-midpoint.z()+posZ);
+    modelViewMatrix.translate (posX,posY,posZ);
+    //Realização da rotação do objeto
+    modelViewMatrix.rotate(rotX,1,0,0);
+    modelViewMatrix.rotate(rotY,0,1,0);
+    modelViewMatrix.rotate(rotZ,0,0,1);
+    //Realizacao da escala do objeto
+    modelViewMatrix.scale(scaX*invdiag/2,scaX*invdiag/2,scaX*invdiag/2);
+    //Realizacao da translação para a origem
+    modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
     shaderProgram -> bind ();
 
 	//Atribuir os valores ao shader
