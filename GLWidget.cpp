@@ -1,4 +1,4 @@
-#include "GLWidget.h"
+﻿#include "GLWidget.h"
 
 GLWidget :: GLWidget ( QWidget * parent) :
     QGLWidget ( parent )
@@ -67,7 +67,6 @@ void GLWidget :: paintGL ()
     //Configuracao da matriz do Mundo
     worldViewMatrix.setToIdentity ();
     worldViewMatrix.lookAt ( camera.eye , camera.at , camera.up);
-    worldViewMatrix.translate (0, 0, 0);
     worldViewMatrix.scale(4.0,4.0,4.0);
     worldViewMatrix.rotate ( trackBall.getRotation ());
 
@@ -161,6 +160,7 @@ void GLWidget::changeCamera(unsigned long i)
     //Configurando a câmera atual para a câmera i do vetor de câmeras
     camera.setCamera(cameras[i].eye, cameras[i].at, cameras[i].up);
     trackBall.resetRotation();
+    cameraIdx = i;
     updateGL();
 }
 
@@ -168,8 +168,11 @@ void GLWidget::interact(bool *keyDirection)
 {
     player.move(keyDirection);
 
-    camera.at.setX(player.getPlayerPos().x());
-    camera.at.setZ(player.getPlayerPos().z());
-
+    camera.at.setX(4*player.getPlayerPos().x());
+    camera.eye.setX(4*player.getPlayerPos().x());
+    if(cameraIdx == 1){
+        camera.at.setZ(4*player.getPlayerPos().z());
+        camera.eye.setZ(4*player.getPlayerPos().z());
+    }
     updateGL();
 }

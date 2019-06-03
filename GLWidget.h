@@ -38,6 +38,7 @@ private:
     Camera camera;
 
     std::vector<Camera> cameras;
+    int cameraIdx;
     Light light ;
     Material material ;
     TrackBall trackBall ;
