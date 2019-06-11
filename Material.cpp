@@ -20,6 +20,11 @@ Material Material::setMaterial(QString materialName)
         ambient = QVector4D (186/255.0, 123/255.0, 32/255.0, 1.0);
         specular = QVector4D (254/255.0, 236/255.0, 152/255.0, 1.0);
         shininess = 25.0;
+    }else if (materialName == "brown_paper") {
+        diffuse = QVector4D (151/255.0, 92/255.0, 32/255.0 , 1.0) ;
+        ambient = QVector4D (94/255.0, 41/255.0, 7/255.0, 1.0);
+        specular = QVector4D (216/255.0, 169/255.0, 119/255.0, 1.0);
+        shininess = 5.0;
     }else{
         ambient = QVector4D (0.3,  0.3, 0.3, 1.0) ;
         diffuse = QVector4D (0.7 , 0.7 , 0.7 , 1.0) ;
