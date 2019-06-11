@@ -52,8 +52,10 @@ public:
         MainWindow->setWindowIcon(icon);
         actionCamera_1 = new QAction(MainWindow);
         actionCamera_1->setObjectName(QString::fromUtf8("actionCamera_1"));
+        actionCamera_1->setCheckable(false);
         actionCamera_2 = new QAction(MainWindow);
         actionCamera_2->setObjectName(QString::fromUtf8("actionCamera_2"));
+        actionCamera_2->setCheckable(false);
         actionWiki = new QAction(MainWindow);
         actionWiki->setObjectName(QString::fromUtf8("actionWiki"));
         actionSair = new QAction(MainWindow);
@@ -76,7 +78,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1000, 22));
+        menuBar->setGeometry(QRect(0, 0, 1000, 25));
         menuCamera = new QMenu(menuBar);
         menuCamera->setObjectName(QString::fromUtf8("menuCamera"));
         menuOp_es = new QMenu(menuBar);
@@ -107,7 +109,9 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
         actionCamera_1->setText(QApplication::translate("MainWindow", "Camera 1", 0, QApplication::UnicodeUTF8));
+        actionCamera_1->setShortcut(QApplication::translate("MainWindow", "Ctrl+1", 0, QApplication::UnicodeUTF8));
         actionCamera_2->setText(QApplication::translate("MainWindow", "Camera 2", 0, QApplication::UnicodeUTF8));
+        actionCamera_2->setShortcut(QApplication::translate("MainWindow", "Ctrl+2", 0, QApplication::UnicodeUTF8));
         actionWiki->setText(QApplication::translate("MainWindow", "Wiki...", 0, QApplication::UnicodeUTF8));
         actionSair->setText(QApplication::translate("MainWindow", "Sair", 0, QApplication::UnicodeUTF8));
         actionZoom_in->setText(QApplication::translate("MainWindow", "Zoom in", 0, QApplication::UnicodeUTF8));

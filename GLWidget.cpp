@@ -161,6 +161,12 @@ void GLWidget::changeCamera(unsigned long i)
     camera.setCamera(cameras[i].eye, cameras[i].at, cameras[i].up);
     trackBall.resetRotation();
     cameraIdx = i;
+    camera.at.setX(4*player.getPlayerPos().x());
+    camera.eye.setX(4*player.getPlayerPos().x());
+    if(cameraIdx == 1){
+        camera.at.setZ(4*player.getPlayerPos().z());
+        camera.eye.setZ(4*player.getPlayerPos().z());
+    }
     updateGL();
 }
 

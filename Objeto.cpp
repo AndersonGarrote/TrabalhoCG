@@ -5,14 +5,14 @@ Objeto :: Objeto ()
     numFaces=0;
     numVertices=0;
     currentShader = 0;
-    vboVertices = nullptr;
-    vboNormals = nullptr;
-    vboIndices = nullptr;
-    normals = nullptr;
+    vboVertices = 0;
+    vboNormals = 0;
+    vboIndices = 0;
+    normals = 0;
 
-    vertexShader = nullptr;
-    fragmentShader = nullptr;
-    shaderProgram = nullptr;
+    vertexShader = 0;
+    fragmentShader = 0;
+    shaderProgram = 0;
 
     posX = 0; posY = 0; posZ = 0;
     rotX = 0; rotY = 0; rotZ = 0;
@@ -241,10 +241,10 @@ void Objeto :: createShaders ()
 
 	//Vincula os novos shaders
     QString vertexShaderFile [] = {
-        ":/shaders/vgouraud.glsl",
+        ":/shaders/vphong.glsl",
     };
     QString fragmentShaderFile [] = {
-        ":/shaders/fgouraud.glsl",
+        ":/shaders/fphong.glsl",
     };
 
     vertexShader = new QGLShader( QGLShader::Vertex );
@@ -336,6 +336,7 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
     modelViewMatrix.scale(scaX*invdiag/2,scaX*invdiag/2,scaX*invdiag/2);
     //Realizacao da translação para a origem
     modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
+
     shaderProgram -> bind ();
 
 	//Atribuir os valores ao shader
@@ -360,7 +361,7 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
     shaderProgram -> setAttributeBuffer ("vNormal", GL_FLOAT ,0, 3, 0);
 
     vboVertices -> bind ();
-	//Atribuir os valores ao shader
+    //Atribuir os valores ao shader
     shaderProgram -> enableAttributeArray ("vPosition");
     shaderProgram -> setAttributeBuffer ("vPosition", GL_FLOAT ,0, 4, 0);
 

@@ -24,5 +24,5 @@ SOURCES += Camera.cpp \
 RESOURCES += resources.qrc
 
 #Shaders
-OTHER_FILES += fgouraud.glsl \
-              vgouraud.glsl
+OTHER_FILES += fphong.glsl \
+              vphong.glsl

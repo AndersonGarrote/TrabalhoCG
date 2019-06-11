@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/shaders">
-        <file>fgouraud.glsl</file>
-        <file>vgouraud.glsl</file>
+        <file>fphong.glsl</file>
+        <file>vphong.glsl</file>
     </qresource>
 </RCC>
