@@ -172,13 +172,26 @@ void GLWidget::changeCamera(unsigned long i)
 
 void GLWidget::interact(bool *keyDirection)
 {
-    player.move(keyDirection);
-
+    if(keyDirection[4]){
+        player.jump();
+    }else{
+        player.fall();
+        if( keyDirection[0] ||  keyDirection[1] || keyDirection[2] || keyDirection[3]){
+            player.move(keyDirection);
+        }
+    }
     camera.at.setX(4*player.getPlayerPos().x());
     camera.eye.setX(4*player.getPlayerPos().x());
+
     if(cameraIdx == 1){
         camera.at.setZ(4*player.getPlayerPos().z());
-        camera.eye.setZ(4*player.getPlayerPos().z());
+        camera.eye.setZ(4*player.getPlayerPos().z());        
+
+    } else{
+
+        camera.at.setY(4*player.getPlayerPos().y());
+        camera.eye.setY(4*player.getPlayerPos().y());
     }
+
     updateGL();
 }

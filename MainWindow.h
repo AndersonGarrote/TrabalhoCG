@@ -43,7 +43,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    bool keyDirection[4];
+    bool keyDirection[5];
 };
 
 #endif // MAINWINDOW_H

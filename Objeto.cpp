@@ -14,7 +14,7 @@ Objeto :: Objeto ()
     fragmentShader = 0;
     shaderProgram = 0;
 
-    posX = 0; posY = 0; posZ = 0;
+    posX = 0.0; posY = 0.0; posZ = 0.0;
     rotX = 0; rotY = 0; rotZ = 0;
     scaX = 1; scaY = 1; scaZ = 1;
 }

@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    for (int i=0; i<4; i++)
+    for (int i=0; i<5; i++)
         keyDirection[i] = false;
 
      ui->setupUi(this);
@@ -68,10 +68,14 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
     case Qt::Key_Right:
         keyDirection[3] = true;
         break;
+    case Qt::Key_Space:
+        keyDirection[4] = true;
+        break;
     default:
         return;
     break;
     }
+
     ui->glwidget->interact(keyDirection);
 }
 
@@ -96,6 +100,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
         case Qt::Key_Right:
             keyDirection[3] = false;
             break;
+        case Qt::Key_Space:
+            keyDirection[4] = false;
+            break;
         }
     }
+
+    ui->glwidget->interact(keyDirection);
 }
