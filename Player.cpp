@@ -61,13 +61,20 @@ void Player::jump()
       posInicialPuloX = posX;
       posInicialPuloZ = posZ;
     }else if( t < 1.0 ){
-
        t += 0.025;
+
        QVector3D ptCurva =  bezier( curvaBezier );
 
-       posX = ptCurva.x() + posInicialPuloX;
+       QMatrix4x4 transform;
+       transform.setToIdentity();
+       transform.translate(posInicialPuloX, 0.0, posInicialPuloZ);
+       transform.rotate(rotY,0.0,1.0,0.0);
+
+       ptCurva = transform * ptCurva ;
+
+       posX = ptCurva.x();
        posY = ptCurva.y();
-       posZ = ptCurva.z() + posInicialPuloZ;
+       posZ = ptCurva.z();
 
    } else {
         t = 0.0;
