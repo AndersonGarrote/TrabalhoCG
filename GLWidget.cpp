@@ -185,10 +185,9 @@ void GLWidget::interact(bool *keyDirection)
 
     if(cameraIdx == 1){
         camera.at.setZ(4*player.getPlayerPos().z());
-        camera.eye.setZ(4*player.getPlayerPos().z());        
+        camera.eye.setZ(4*player.getPlayerPos().z());
 
     } else{
-
         camera.at.setY(4*player.getPlayerPos().y());
         camera.eye.setY(4*player.getPlayerPos().y());
     }

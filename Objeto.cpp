@@ -339,16 +339,16 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
 
     shaderProgram -> bind ();
 
-	//Atribuir os valores ao shader
+    //Atribuir os valores ao shader
     shaderProgram -> setUniformValue ("modelViewMatrix", modelViewMatrix );
     shaderProgram -> setUniformValue ("projectionMatrix", projectionMatrix );
-    shaderProgram -> setUniformValue("normalMatrix", modelViewMatrix.normalMatrix ());
+    shaderProgram -> setUniformValue("normalMatrix", modelViewMatrix.normalMatrix() );
 
     QVector4D ambientProduct = light.ambient * material.ambient ;
     QVector4D diffuseProduct = light.diffuse * material.diffuse ;
     QVector4D specularProduct = light.specular * material.specular ;
 
-	//Atribuir os valores ao shader
+    //Atribuir os valores ao shader
     shaderProgram -> setUniformValue ("lightPosition", light.position );
     shaderProgram -> setUniformValue ("ambientProduct", ambientProduct );
     shaderProgram -> setUniformValue ("diffuseProduct", diffuseProduct );
@@ -356,7 +356,7 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
     shaderProgram -> setUniformValue ( "shininess", static_cast < GLfloat >( material.shininess ));
 
     vboNormals -> bind ();
-	//Atribuir os valores ao shader
+    //Atribuir os valores ao shader
     shaderProgram -> enableAttributeArray ("vNormal");
     shaderProgram -> setAttributeBuffer ("vNormal", GL_FLOAT ,0, 3, 0);
 
