@@ -5,7 +5,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
 {
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
-    objetos = new Objeto[2];
+    objetos = new Objeto[5];
 	flagAbertura = 1;
 
     //Inicialização do vetor de câmeras
@@ -55,6 +55,26 @@ void GLWidget :: showObj ()
         objetos[1].createShaders ();
         objetos[1].setPosition(0.0, 0.0, 0.0);
 
+        //Gerar o terceiro objeto
+        fileName = "./objFiles/mobilia/cadeira.obj";
+        objetos[2].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[2].genNormals ();
+        objetos[2].createVBOs ();
+        objetos[2].createShaders ();
+        objetos[2].setPosition(0.0, 0.040, -0.1);
+        objetos[2].setScale(0.22,0.17,0.18);
+        objetos[2].setRotation(90, 0, 1, 0);
+
+        //Gerar o segundo objeto
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        objetos[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[3].genNormals ();
+        objetos[3].createVBOs ();
+        objetos[3].createShaders ();
+        objetos[3].setPosition(0.0, 0.018, 0.0);
+        objetos[3].setScale(0.13,0.13,0.13);
+        //objetos[3].setRotation(90, 0, 1, 0);
+
         paintGL();
     }
 }
@@ -85,6 +105,16 @@ void GLWidget :: paintGL ()
     objetos[1].setMaterial(material.setMaterial("green_plastic"));
     objetos[1].setLight(light);
     objetos[1].paintGL(projectionMatrix);
+
+    objetos[2].setModelViewMatrix(worldViewMatrix);
+    objetos[2].setMaterial(material.setMaterial("yellow_plastic"));
+    objetos[2].setLight(light);
+    objetos[2].paintGL(projectionMatrix);
+
+    objetos[3].setModelViewMatrix(worldViewMatrix);
+    objetos[3].setMaterial(material.setMaterial("green_plastic"));
+    objetos[3].setLight(light);
+    objetos[3].paintGL(projectionMatrix);
 }
 
 void GLWidget :: initializeGL ()
