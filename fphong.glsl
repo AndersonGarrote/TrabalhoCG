@@ -17,7 +17,7 @@ out vec4 fColor;
 void main ()
 {
 
-    vec3 N = normalize(normalInter);
+    vec3 N = normalize( normalInter );
     vec3 L = normalize( lightPosition.xyz - eyePosition.xyz );
     vec3 E = normalize( - eyePosition.xyz );
     vec3 R = reflect (-E, N);

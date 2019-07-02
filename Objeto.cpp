@@ -325,22 +325,36 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
     if (! vboVertices ){
         return ;
     }
-
+    QMatrix4x4 modelMatrix;
+    modelMatrix.setToIdentity();
     //Realizacao da translação do objeto
     modelViewMatrix.translate (posX,posY,posZ);
+    modelMatrix.translate(posX,posY,posZ);
     //Realização da rotação do objeto
     modelViewMatrix.rotate(rotX,1,0,0);
     modelViewMatrix.rotate(rotY,0,1,0);
     modelViewMatrix.rotate(rotZ,0,0,1);
+
+
+    modelMatrix.rotate(rotX,1,0,0);
+    modelMatrix.rotate(rotY,0,1,0);
+    modelMatrix.rotate(rotZ,0,0,1);
     //Realizacao da escala do objeto
     modelViewMatrix.scale(scaX*invdiag/2,scaX*invdiag/2,scaX*invdiag/2);
     //Realizacao da translação para a origem
     modelViewMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
 
+    //Realizacao da escala do objeto
+    modelMatrix.scale(scaX*invdiag/2,scaX*invdiag/2,scaX*invdiag/2);
+    //Realizacao da translação para a origem
+    modelMatrix.translate (-midpoint.x(),-midpoint.y(),-midpoint.z());
+
+
     shaderProgram -> bind ();
 
     //Atribuir os valores ao shader
     shaderProgram -> setUniformValue ("modelViewMatrix", modelViewMatrix );
+    shaderProgram -> setUniformValue ("modelMatrix", modelMatrix );
     shaderProgram -> setUniformValue ("projectionMatrix", projectionMatrix );
     shaderProgram -> setUniformValue("normalMatrix", modelViewMatrix.normalMatrix() );
 

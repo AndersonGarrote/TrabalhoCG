@@ -5,6 +5,7 @@ in vec3 vNormal;
 
 uniform mat3 normalMatrix;
 uniform mat4 modelViewMatrix;
+uniform mat4 modelMatrix;
 uniform mat4 projectionMatrix;
 
 out vec4 eyePosition;
@@ -13,6 +14,6 @@ out vec3 normalInter;
 void main ()
 {
         normalInter =  normalMatrix * vNormal;
-        eyePosition = modelViewMatrix * vPosition ;
-        gl_Position = projectionMatrix * eyePosition ;
+        eyePosition =  modelMatrix * vPosition ;
+        gl_Position = projectionMatrix * modelViewMatrix * vPosition ;
 }
