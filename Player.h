@@ -9,6 +9,7 @@ private:
     QVector<QVector3D> curvaBezier;
     double t;
     double posInicialPuloX, posInicialPuloY, posInicialPuloZ;
+    double anguloOrbita;
 
 public:
     Player();
@@ -18,6 +19,10 @@ public:
     void fall();
 
     QVector3D getPlayerPos();
+
+    double getanguloOrbita(int ang);
+
+    void anguloOrbitaIncrement(double increment);
 
 private:
     QVector3D bezier(QVector<QVector3D> pointList);

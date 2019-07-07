@@ -1,6 +1,8 @@
 #include "Player.h"
 #include <QDebug>
 
+#define PI 3.14159265
+
 Player::Player()
 {
     curvaBezier.append(QVector3D (0.0 , 0.054 , 0.0));
@@ -10,6 +12,7 @@ Player::Player()
     t = 0.0;
     posInicialPuloX = 0.0;
     posInicialPuloZ = 0.0;
+    anguloOrbita = 0;
 }
 
 
@@ -101,4 +104,19 @@ void Player::fall()
 {
     this->posY = 0.054;
     this->t = 0.0;
+}
+
+double Player::getanguloOrbita(int ang)
+{
+        return (this->anguloOrbita + ang)*PI/180;
+}
+
+void Player::anguloOrbitaIncrement(double increment)
+{
+    this->anguloOrbita += increment;
+    if(this->anguloOrbita >= 360)
+    {
+        this->anguloOrbita -= 360;
+    }
+
 }

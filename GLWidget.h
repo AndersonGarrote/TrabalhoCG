@@ -34,6 +34,7 @@ public slots :
 private:
     Player player;
     Objeto * objetos;
+    Objeto * orbitas;
     double zoom;
     Camera camera;
 

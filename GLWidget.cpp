@@ -5,7 +5,8 @@ GLWidget :: GLWidget ( QWidget * parent) :
 {
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
-    objetos = new Objeto[5];
+    objetos = new Objeto[4];
+    orbitas = new Objeto[4];
 	flagAbertura = 1;
 
     //Inicialização do vetor de câmeras
@@ -75,6 +76,51 @@ void GLWidget :: showObj ()
         objetos[3].setScale(0.13,0.13,0.13);
         //objetos[3].setRotation(90, 0, 1, 0);
 
+        //Gerar o primeiro objeto que vai orbitar o player
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        orbitas[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        orbitas[0].genNormals ();
+        orbitas[0].createVBOs ();
+        orbitas[0].createShaders ();
+        orbitas[0].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05);
+        orbitas[0].setScale(0.05,0.05,0.05);
+
+        //Gerar o segundo objeto que vai orbitar o player
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        orbitas[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        orbitas[1].genNormals ();
+        orbitas[1].createVBOs ();
+        orbitas[1].createShaders ();
+        orbitas[1].setPosition(player.getPlayerPos().x() + 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
+        orbitas[1].setScale(0.05,0.05,0.05);
+
+        //Gerar o terceiro objeto que vai orbitar o player
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        orbitas[2].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        orbitas[2].genNormals ();
+        orbitas[2].createVBOs ();
+        orbitas[2].createShaders ();
+        orbitas[2].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() - 0.05);
+        orbitas[2].setScale(0.05,0.05,0.05);
+
+        //Gerar o segundo objeto que vai orbitar o player
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        orbitas[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        orbitas[3].genNormals ();
+        orbitas[3].createVBOs ();
+        orbitas[3].createShaders ();
+        orbitas[3].setPosition(player.getPlayerPos().x() - 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
+        orbitas[3].setScale(0.05,0.05,0.05);
+
+//        //Gerar o segundo objeto que vai orbitar o player
+//        fileName = "./objFiles/blocos/bloco2x2.obj";
+//        objetos[5].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+//        objetos[5].genNormals ();
+//        objetos[5].createVBOs ();
+//        objetos[5].createShaders ();
+//        objetos[5].setPosition(player.getPlayerPos().x() + 0.05,player.getPlayerPos().y(), player.getPlayerPos().z());
+//        objetos[5].setScale(0.05,0.05,0.05);
+
         paintGL();
     }
 }
@@ -115,6 +161,26 @@ void GLWidget :: paintGL ()
     objetos[3].setMaterial(material.setMaterial("green_plastic"));
     objetos[3].setLight(light);
     objetos[3].paintGL(projectionMatrix);
+
+    orbitas[0].setModelViewMatrix(worldViewMatrix);
+    orbitas[0].setMaterial(material.setMaterial("other_material"));
+    orbitas[0].setLight(light);
+    orbitas[0].paintGL(projectionMatrix);
+
+    orbitas[1].setModelViewMatrix(worldViewMatrix);
+    orbitas[1].setMaterial(material.setMaterial("brown_paper"));
+    orbitas[1].setLight(light);
+    orbitas[1].paintGL(projectionMatrix);
+
+    orbitas[2].setModelViewMatrix(worldViewMatrix);
+    orbitas[2].setMaterial(material.setMaterial("green_plastic"));
+    orbitas[2].setLight(light);
+    orbitas[2].paintGL(projectionMatrix);
+
+    orbitas[3].setModelViewMatrix(worldViewMatrix);
+    orbitas[3].setMaterial(material.setMaterial("yellow_plastic"));
+    orbitas[3].setLight(light);
+    orbitas[3].paintGL(projectionMatrix);
 }
 
 void GLWidget :: initializeGL ()
@@ -202,14 +268,22 @@ void GLWidget::changeCamera(unsigned long i)
 
 void GLWidget::interact(bool *keyDirection)
 {
+
     if(keyDirection[4]){
         player.jump();
     }else{
         player.fall();
         if( keyDirection[0] ||  keyDirection[1] || keyDirection[2] || keyDirection[3]){
             player.move(keyDirection);
+            orbitas[0].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(0)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(0)));
+            orbitas[1].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(90)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(90)));
+            orbitas[2].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(180)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(180)));
+            orbitas[3].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(270)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(270)));
+            player.anguloOrbitaIncrement(2.5);
+
         }
     }
+
     camera.at.setX(4*player.getPlayerPos().x());
     camera.eye.setX(4*player.getPlayerPos().x());
 
@@ -221,6 +295,7 @@ void GLWidget::interact(bool *keyDirection)
         camera.at.setY(4*player.getPlayerPos().y());
         camera.eye.setY(4*player.getPlayerPos().y());
     }
+
 
     updateGL();
 }
