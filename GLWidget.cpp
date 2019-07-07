@@ -5,9 +5,9 @@ GLWidget :: GLWidget ( QWidget * parent) :
 {
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
-    objetos = new Objeto[4];
+    objetos = new Objeto[8];
     orbitas = new Objeto[4];
-	flagAbertura = 1;
+	  flagAbertura = 1;
 
     //Inicialização do vetor de câmeras
     cameras.push_back(camera);
@@ -36,7 +36,7 @@ void GLWidget :: showObj ()
         player.genNormals ();
         player.createVBOs ();
         player.createShaders ();
-        player.setPosition(0.0, 0.054, 0.0);
+        player.setPosition(0.0, 0.054, 0.05);
         player.setScale(0.25,0.25,0.25);
 
         //Gerar o primeiro objeto
@@ -62,19 +62,55 @@ void GLWidget :: showObj ()
         objetos[2].genNormals ();
         objetos[2].createVBOs ();
         objetos[2].createShaders ();
-        objetos[2].setPosition(0.0, 0.040, -0.1);
-        objetos[2].setScale(0.22,0.17,0.18);
+        objetos[2].setPosition(0.0, 0.050, -0.15);
+        objetos[2].setScale(0.22,0.05,0.18);
         objetos[2].setRotation(90, 0, 1, 0);
 
-        //Gerar o segundo objeto
-        fileName = "./objFiles/blocos/bloco2x2.obj";
+        //Gerar o quarto objeto
+        fileName = "./objFiles/outros/foguete.obj";
         objetos[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
         objetos[3].genNormals ();
         objetos[3].createVBOs ();
         objetos[3].createShaders ();
-        objetos[3].setPosition(0.0, 0.018, 0.0);
-        objetos[3].setScale(0.13,0.13,0.13);
-        //objetos[3].setRotation(90, 0, 1, 0);
+        objetos[3].setPosition(-0.15, 0.07, -0.12);
+        objetos[3].setScale(0.3,0.5,0.3);
+
+        //Gerar o quinto objeto
+        fileName = "./objFiles/outros/laptop.obj";
+        objetos[4].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[4].genNormals ();
+        objetos[4].createVBOs ();
+        objetos[4].createShaders ();
+        objetos[4].setPosition(0.0, 0.099, -0.08);
+        objetos[4].setScale(0.2,0.2,0.2);
+
+        //Gerar o sexto objeto
+        fileName = "./objFiles/mobilia/escrivaninha.obj";
+        objetos[5].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[5].genNormals ();
+        objetos[5].createVBOs ();
+        objetos[5].createShaders ();
+        objetos[5].setPosition(0.0, 0.04, -0.08);
+        objetos[5].setScale(0.4,0.7,0.4);
+
+        //Gerar o setimo objeto
+        fileName = "./objFiles/mobilia/lampada.obj";
+        objetos[6].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[6].genNormals ();
+        objetos[6].createVBOs ();
+        objetos[6].createShaders ();
+        objetos[6].setPosition(-0.1, 0.078, 0);
+        objetos[6].setScale(0.3,0.3,0.3);
+
+        //Gerar o oitavo objeto
+        fileName = "./objFiles/mobilia/poltrona.obj";
+        objetos[7].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        objetos[7].genNormals ();
+        objetos[7].createVBOs ();
+        objetos[7].createShaders ();
+        objetos[7].setPosition(-0.13, 0.045, 0.1);
+        objetos[7].setScale(0.3,0.3,0.3);
+        objetos[7].setRotation(270, 0, 1, 0);
 
         //Gerar o primeiro objeto que vai orbitar o player
         fileName = "./objFiles/blocos/bloco2x2.obj";
@@ -127,7 +163,7 @@ void GLWidget :: showObj ()
 
 void GLWidget :: paintGL ()
 {
-    //Limpando a tela 
+    //Limpando a tela
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     //Configuracao da matriz do Mundo
@@ -161,6 +197,26 @@ void GLWidget :: paintGL ()
     objetos[3].setMaterial(material.setMaterial("green_plastic"));
     objetos[3].setLight(light);
     objetos[3].paintGL(projectionMatrix);
+
+    objetos[4].setModelViewMatrix(worldViewMatrix);
+    //objetos[4].setMaterial(material.setMaterial("green_plastic"));
+    objetos[4].setLight(light);
+    objetos[4].paintGL(projectionMatrix);
+
+    objetos[5].setModelViewMatrix(worldViewMatrix);
+    objetos[5].setMaterial(material.setMaterial("green_plastic"));
+    objetos[5].setLight(light);
+    objetos[5].paintGL(projectionMatrix);
+
+    objetos[6].setModelViewMatrix(worldViewMatrix);
+    objetos[6].setMaterial(material.setMaterial("brown_paper"));
+    objetos[6].setLight(light);
+    objetos[6].paintGL(projectionMatrix);
+
+    objetos[7].setModelViewMatrix(worldViewMatrix);
+    objetos[7].setMaterial(material.setMaterial("yellow_plastic"));
+    objetos[7].setLight(light);
+    objetos[7].paintGL(projectionMatrix);
 
     orbitas[0].setModelViewMatrix(worldViewMatrix);
     orbitas[0].setMaterial(material.setMaterial("other_material"));
