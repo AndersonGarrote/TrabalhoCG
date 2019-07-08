@@ -28,6 +28,11 @@ Objeto ::~Objeto ()
     destroyVBOs ();
 }
 
+QVector3D Objeto::getObjetoPos()
+{
+    return QVector3D(posX,posY,posZ);
+}
+
 void Objeto :: readOBJFile ( const QString & fileName )
 {
 	//Funcao para a leitura de um arquivo .obj
@@ -42,7 +47,7 @@ void Objeto :: readOBJFile ( const QString & fileName )
 	  	qWarning (" Cannot open file .");
 	  	return ;
 	}
-    
+
 	//Cria variaveis auxiliares
 	char linhaChar[2048];
 	double x, y, z;

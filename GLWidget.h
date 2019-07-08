@@ -10,7 +10,7 @@
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
-    
+
 public :
     explicit GLWidget (QWidget * parent);
     virtual ~GLWidget ();
@@ -50,6 +50,8 @@ private:
 
     QMatrix4x4 worldViewMatrix;
     QMatrix4x4 projectionMatrix;
+
+    int flagAparecer[4];
 };
 
 #endif // GLWIDGET_H

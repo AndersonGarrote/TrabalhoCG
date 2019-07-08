@@ -36,6 +36,7 @@ public :
     void genMagicCubeNormals();
     void paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures);
     void createTextureShaders();
+    QVector3D getObjetoPos();
 
 protected:
     double posX, posY, posZ;
@@ -52,7 +53,7 @@ private :
     std::queue<intDoub> vertVn;
     std::queue<intDoub> vertVt;
     QVector3D * normals ;
-    
+
     QVector4D midpoint;
     double invdiag;
 

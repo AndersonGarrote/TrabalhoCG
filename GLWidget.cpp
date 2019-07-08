@@ -9,7 +9,9 @@ GLWidget :: GLWidget ( QWidget * parent) :
     blocos = new Objeto[4];
     orbitas = new Objeto[4];
 	  flagAbertura = 1;
-
+    for(int i = 0; i < 4; i++){
+      flagAparecer[i] = 0;
+    }
     //Inicialização do vetor de câmeras
     cameras.push_back(camera);
     cameras.push_back(camera);
@@ -215,15 +217,18 @@ void GLWidget :: paintGL ()
     objetos[7].paintGL(projectionMatrix);
 
     for (int i = 0; i < 4; i++) {
+      if(flagAparecer[i] == 0){
         blocos[i].setModelViewMatrix(worldViewMatrix);
         blocos[i].setMaterial(material.setMaterial("white_plastic"));
         blocos[i].setLight(light);
         blocos[i].paintCubeGL(projectionMatrix, cubeTextures);
-
+      }
+      else{
         orbitas[i].setModelViewMatrix(worldViewMatrix);
         orbitas[i].setMaterial(material.setMaterial("white_plastic"));
         orbitas[i].setLight(light);
         orbitas[i].paintCubeGL(projectionMatrix, cubeTextures);
+      }
     }
 }
 
@@ -349,5 +354,24 @@ void GLWidget::interact(bool *keyDirection)
     orbitas[3].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(270)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(270)));
     player.anguloOrbitaIncrement(2.5);
 
+    double x, y, z, dist[4];
+    for(int i = 0; i < 4; i++){
+        x = player.getPlayerPos().x() - blocos[i].getObjetoPos().x();
+        y = player.getPlayerPos().y() - blocos[i].getObjetoPos().y();
+        z = player.getPlayerPos().z() - blocos[i].getObjetoPos().z();
+        dist[i] = (x*x) + (y*y) + (z*z);
+    }
+    if(dist[0] < 0.001){
+        flagAparecer[0] = 1;
+    }
+    if(dist[1] < 0.001){
+        flagAparecer[1] = 1;
+    }
+    if(dist[2] < 0.001){
+        flagAparecer[2] = 1;
+    }
+    if(dist[3] < 0.001){
+        flagAparecer[3] = 1;
+    }
     updateGL();
 }
