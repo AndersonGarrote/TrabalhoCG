@@ -22,9 +22,7 @@ SOURCES += Camera.cpp \
            Material.cpp \
            Objeto.cpp \
            TrackBall.cpp \
-           moc_GLWidget.cpp \
-           moc_MainWindow.cpp \
-           qrc_resources.cpp
+
 RESOURCES += resources.qrc
 
 #Shaders
