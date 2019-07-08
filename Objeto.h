@@ -52,7 +52,6 @@ private :
     std::queue<intDoub> vertVn;
     std::queue<intDoub> vertVt;
     QVector3D * normals ;
-    QVector2D * texCoords;
     
     QVector4D midpoint;
     double invdiag;

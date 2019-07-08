@@ -11,7 +11,6 @@ Objeto :: Objeto ()
     vboIndices = 0;
     vboTextureCoords = 0;
     normals = 0;
-    texCoords = 0;
 
     vertexShader = 0;
     fragmentShader = 0;
@@ -198,8 +197,7 @@ void Objeto :: genNormals ()
 void Objeto :: genTextures ()
 {
     //Funcao para gerar as normais baseado nos vn informado pelo arquivo obj
-    delete [] texCoords ;
-    texCoords = new QVector2D [numVertices];
+    texCoords.clear();
     intDoub vvn;
 
     while(!vertVt.empty()){
@@ -238,10 +236,9 @@ void Objeto :: createVBOs (  )
     vboTexCoords -> create () ;
     vboTexCoords -> bind () ;
     vboTexCoords -> setUsagePattern ( QGLBuffer :: StaticDraw ) ;
-    vboTexCoords -> allocate ( texCoords , numVertices * sizeof ( QVector2D ) ) ;
+    vboTexCoords -> allocate ( texCoords.data() , numVertices * sizeof ( QVector2D ) ) ;
 
-    delete [] texCoords;
-    texCoords = NULL;
+    texCoords.clear();
 
     vboIndices = new QGLBuffer ( QGLBuffer :: IndexBuffer );
     vboIndices -> create () ;
