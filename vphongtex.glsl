@@ -2,7 +2,7 @@
 
 in vec4 vPosition;
 in vec3 vNormal;
-in vec2 vTextureCoord;
+attribute mediump vec2 vTextureCoord;
 
 uniform mat3 normalMatrix;
 uniform mat4 modelViewMatrix;

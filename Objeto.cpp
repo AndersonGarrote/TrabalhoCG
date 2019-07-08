@@ -386,19 +386,7 @@ void Objeto::genMagicCube()
             numVertices++;
             texCoords.append(QVector2D(j == 0 || j == 3, j == 0 || j == 1));
             vertices.push_back(QVector4D(coords[i][j][0],coords[i][j][1],coords[i][j][2], 1.0));
-        }/*
-        numFaces++;
-
-        //Adiciona os indices dos vértices no vetor de índices
-        indices.push_back(i*4+0);
-        indices.push_back(i*4+1);
-        indices.push_back(i*4+2);
-
-        //Adiciona os índices de modo que o quadrilátero seja lido como dois triângulos
-        indices.push_back(i*4+0);
-        indices.push_back(i*4+2);
-        indices.push_back(i*4+3);
-        */
+        }
     }
 
     //Ponto central do objeto
@@ -436,6 +424,7 @@ void Objeto::genMagicCubeNormals()
 
 void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
 {
+
     //Funcao para exibir o objeto na tela
     if (! vboVertices ){
         return ;
@@ -498,6 +487,7 @@ void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
     shaderProgram -> setUniformValue("texColorMap", 0);
 
     for (int i = 0; i < 6; ++i) {
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
         glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
     }
