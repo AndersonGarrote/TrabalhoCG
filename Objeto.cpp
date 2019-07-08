@@ -7,6 +7,7 @@ Objeto :: Objeto ()
     currentShader = 0;
     vboVertices = 0;
     vboNormals = 0;
+    vboTexCoords = 0;
     vboIndices = 0;
     vboTextureCoords = 0;
     normals = 0;
@@ -41,7 +42,7 @@ void Objeto :: readOBJFile ( const QString & fileName )
 	  	qWarning (" Cannot open file .");
 	  	return ;
 	}
-
+    
 	//Cria variaveis auxiliares
 	char linhaChar[2048];
 	double x, y, z;
@@ -99,6 +100,10 @@ void Objeto :: readOBJFile ( const QString & fileName )
 		}
 		//Texturas
 		else if(tokens[0]=="vt"){
+            //Recebe as coordenadas do vértice lido
+            x = tokens[1].toDouble(); y = tokens[2].toDouble();
+
+            vertTexture.push_back(QVector2D (x, y));
 		}
 		//Faces
 		else if(tokens[0]=="f"){
@@ -120,6 +125,9 @@ void Objeto :: readOBJFile ( const QString & fileName )
 
                 //Adiciona o vn para o respectivo vertice da face
                 vertVn.push({v[j],vn[j]});
+
+                //Adiciona o vt para o respectivo vertice da face
+                vertVt.push({v[j],vt[j]});
 		  	}
 
 			//Adiciona os indices dos vértices no vetor de índices
@@ -149,6 +157,9 @@ void Objeto :: readOBJFile ( const QString & fileName )
 
                 //Adiciona o vn para o respectivo vertice da face
                 vertVn.push({v[3],vn[3]});
+
+                //Adiciona o vn para o respectivo vertice da face
+                vertVt.push({v[3],vt[3]});
 		    }
 		  }
 		}
@@ -183,6 +194,27 @@ void Objeto :: genNormals ()
     }
 }
 
+void Objeto :: genTextures ()
+{
+    //Funcao para gerar as texturas baseado nos vt informado pelo arquivo obj
+    texCoords.clear() ;
+    for ( unsigned int i = 0; i < numVertices ; i ++) {
+        texCoords.push_back(QVector2D());
+    }
+    
+    intDoub vvn;
+
+    while(!vertVt.empty()){
+        vvn= vertVt.front();
+        vertVt.pop();
+        texCoords[vvn.first] += vertTexture[vvn.second];
+    }
+
+    for ( unsigned int i = 0; i < numVertices ; i ++) {
+        texCoords[i].normalize ();
+    }
+}
+
 void Objeto :: createVBOs (  )
 {
     destroyVBOs ();
@@ -203,6 +235,14 @@ void Objeto :: createVBOs (  )
 
     delete [] normals;
     normals = NULL;
+
+    vboTexCoords = new QGLBuffer ( QGLBuffer :: VertexBuffer ) ;
+    vboTexCoords -> create () ;
+    vboTexCoords -> bind () ;
+    vboTexCoords -> setUsagePattern ( QGLBuffer :: StaticDraw ) ;
+    vboTexCoords -> allocate ( texCoords.data() , numVertices * sizeof ( QVector2D ) ) ;
+
+    texCoords.clear();
 
     vboIndices = new QGLBuffer ( QGLBuffer :: IndexBuffer );
     vboIndices -> create () ;
@@ -233,6 +273,12 @@ void Objeto :: destroyVBOs ()
         vboNormals -> release ();
         delete vboNormals ;
         vboNormals = NULL ;
+    }
+
+    if ( vboTexCoords ) {
+        vboTexCoords -> release () ;
+        delete vboTexCoords ;
+        vboTexCoords = NULL ;
     }
 
     if ( vboIndices ) {
@@ -559,11 +605,16 @@ void Objeto :: paintGL (QMatrix4x4 projectionMatrix)
     shaderProgram -> enableAttributeArray ("vPosition");
     shaderProgram -> setAttributeBuffer ("vPosition", GL_FLOAT ,0, 4, 0);
 
+    vboTexCoords -> bind () ;
+    shaderProgram -> enableAttributeArray ("vTexCoord") ;
+    shaderProgram -> setAttributeBuffer ("vTexCoord", GL_FLOAT , 0 , 2 , 0) ;
+
     vboIndices -> bind ();
     glDrawElements ( GL_TRIANGLES , numFaces * 3, GL_UNSIGNED_INT , 0);
 
     vboIndices -> release ();
     vboNormals -> release ();
+    vboTexCoords -> release () ;
     vboVertices -> release ();
     shaderProgram -> release ();
 }

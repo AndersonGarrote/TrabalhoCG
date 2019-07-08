@@ -20,6 +20,7 @@ public :
     void paintGL (QMatrix4x4 projectionMatrix);
     void readOBJFile ( const QString & fileName );
     void genNormals ();
+    void genTextures ();
     void createVBOs ();
     void destroyVBOs ();
     void createShaders ();
@@ -45,9 +46,11 @@ private :
     unsigned int numFaces;
     unsigned int currentShader ;
     std::vector<QVector4D> vertices;
+    std::vector<QVector2D> vertTexture;
     std::vector<unsigned int> indices ;
     std::vector<QVector3D> vertNormals;
     std::queue<intDoub> vertVn;
+    std::queue<intDoub> vertVt;
     QVector3D * normals ;
     
     QVector4D midpoint;
@@ -61,6 +64,7 @@ private :
     QGLShaderProgram * shaderProgram ;
     QGLShader * vertexShader ;
     QGLShader * fragmentShader ;
+    QGLBuffer * vboTexCoords ;
     Light light ;
     Material material ;
 
