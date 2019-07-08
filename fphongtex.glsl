@@ -3,6 +3,7 @@
 in vec3 fNormal;
 in vec4 eyePosition;
 in vec3 normalInter;
+in vec2 fTextureCoord;
 
 uniform vec4 lightPosition;
 
@@ -10,6 +11,7 @@ uniform vec4 ambientProduct;
 uniform vec4 diffuseProduct;
 uniform vec4 specularProduct;
 uniform float shininess;
+uniform  sampler2D  texColorMap;
 
 out vec4 fColor;
 
@@ -26,7 +28,7 @@ void main ()
     vec4 diffuse = Kd * diffuseProduct ;
     vec4 specular = Ks * specularProduct ;
     vec4 ambient = ambientProduct ;
-    fColor = ambient + diffuse + specular ;
+    fColor = (ambient + diffuse + specular) * texture2D(texColorMap , fTextureCoord) ;
     fColor.a = 1.0;
 
 }

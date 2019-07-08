@@ -42,7 +42,8 @@ private:
     std::vector<Camera> cameras;
     int cameraIdx;
     Light light ;
-    Material material ;
+    Material material;
+    GLuint cubeTextures[6];
     TrackBall trackBall ;
     int flagAbertura;
 
