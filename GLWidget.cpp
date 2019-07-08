@@ -45,7 +45,7 @@ void GLWidget :: showObj ()
         player.setScale(0.25,0.25,0.25);
 
         //Gerar o primeiro objeto
-        fileName = "./objFiles/outros/robo.obj";
+        fileName = "./objFiles/outros/caixaA.obj";
         objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
         objetos[0].genNormals ();
         objetos[0].createVBOs ();
