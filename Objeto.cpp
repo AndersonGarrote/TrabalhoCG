@@ -248,13 +248,6 @@ void Objeto :: createVBOs (  )
 
     indices.clear();
 
-    vboTextureCoords = new QGLBuffer( QGLBuffer :: VertexBuffer );
-    vboTextureCoords -> create ();
-    vboTextureCoords -> bind ();
-    vboTextureCoords -> setUsagePattern ( QGLBuffer :: StaticDraw );
-    vboTextureCoords -> allocate ( texCoords.data() , numVertices * sizeof ( QVector2D ));
-
-    vertices.clear();
 }
 
 void Objeto :: destroyVBOs ()
@@ -471,6 +464,8 @@ void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
     if (! vboVertices ){
         return ;
     }
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
     QMatrix4x4 modelMatrix;
     modelMatrix.setToIdentity();
     //Realizacao da translação do objeto
@@ -525,7 +520,11 @@ void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
     shaderProgram -> enableAttributeArray ("vPosition");
     shaderProgram -> setAttributeBuffer ("vPosition", GL_FLOAT ,0, 4, 0);
 
-    //Atribuir texturas
+    //Atribuir texturas ao shader
+    vboTexCoords -> bind ();
+    shaderProgram -> enableAttributeArray ("vTextureCoord");
+    shaderProgram->setAttributeBuffer ("vTextureCoord", GL_FLOAT ,0, 2, 0);
+
     shaderProgram -> setUniformValue("texColorMap", 0);
 
     for (int i = 0; i < 6; ++i) {
@@ -534,7 +533,7 @@ void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
         glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
     }
 
-    vboTextureCoords -> release();
+    vboTexCoords -> release();
     vboIndices -> release ();
     vboNormals -> release ();
     vboVertices -> release ();

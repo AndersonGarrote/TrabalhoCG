@@ -36,6 +36,7 @@ private:
     Player player;
     Objeto * objetos;
     Objeto * orbitas;
+    Objeto * blocos;
     double zoom;
     Camera camera;
 
