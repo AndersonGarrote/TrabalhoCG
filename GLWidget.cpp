@@ -45,7 +45,7 @@ void GLWidget :: showObj ()
         player.setScale(0.25,0.25,0.25);
 
         //Gerar o primeiro objeto
-        fileName = "./objFiles/outros/caixaA.obj";
+        fileName = "./objFiles/outros/robo.obj";
         objetos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
         objetos[0].genNormals ();
         objetos[0].createVBOs ();
@@ -117,42 +117,14 @@ void GLWidget :: showObj ()
         objetos[7].setScale(0.3,0.3,0.3);
         objetos[7].setRotation(270, 0, 1, 0);
 
-        //Gerar o primeiro objeto que vai orbitar o player
-        fileName = "./objFiles/blocos/bloco2x2.obj";
-        orbitas[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        orbitas[0].genNormals ();
-        orbitas[0].createVBOs ();
-        orbitas[0].createShaders ();
-        orbitas[0].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05);
-        orbitas[0].setScale(0.05,0.05,0.05);
-
-        //Gerar o segundo objeto que vai orbitar o player
-        fileName = "./objFiles/blocos/bloco2x2.obj";
-        orbitas[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        orbitas[1].genNormals ();
-        orbitas[1].createVBOs ();
-        orbitas[1].createShaders ();
-        orbitas[1].setPosition(player.getPlayerPos().x() + 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
-        orbitas[1].setScale(0.05,0.05,0.05);
-
-        //Gerar o terceiro objeto que vai orbitar o player
-        fileName = "./objFiles/blocos/bloco2x2.obj";
-        orbitas[2].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        orbitas[2].genNormals ();
-        orbitas[2].createVBOs ();
-        orbitas[2].createShaders ();
-        orbitas[2].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() - 0.05);
-        orbitas[2].setScale(0.05,0.05,0.05);
-
-        //Gerar o quarto objeto que vai orbitar o player
-        fileName = "./objFiles/blocos/bloco2x2.obj";
-        //orbitas[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        orbitas[3].genMagicCube();
-        orbitas[3].genMagicCubeNormals ();
-        orbitas[3].createVBOs ();
-        orbitas[3].createTextureShaders ();
-        orbitas[3].setPosition(player.getPlayerPos().x() - 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
-        orbitas[3].setScale(0.05,0.05,0.05);
+        for (int i = 0;i < 4; i++) {
+            orbitas[i].genMagicCube();
+            orbitas[i].genMagicCubeNormals ();
+            orbitas[i].createVBOs ();
+            orbitas[i].createTextureShaders ();
+            orbitas[i].setPosition(player.getPlayerPos().x() - 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
+            orbitas[i].setScale(0.05,0.05,0.05);
+        }
 
         paintGL();
     }
@@ -207,7 +179,6 @@ void GLWidget :: paintGL ()
     objetos[3].paintGL(projectionMatrix);
 
     objetos[4].setModelViewMatrix(worldViewMatrix);
-    //objetos[4].setMaterial(material.setMaterial("green_plastic"));
     objetos[4].setLight(light);
     objetos[4].paintGL(projectionMatrix);
 
@@ -226,25 +197,13 @@ void GLWidget :: paintGL ()
     objetos[7].setLight(light);
     objetos[7].paintGL(projectionMatrix);
 
-    orbitas[0].setModelViewMatrix(worldViewMatrix);
-    orbitas[0].setMaterial(material.setMaterial("other_material"));
-    orbitas[0].setLight(light);
-    orbitas[0].paintGL(projectionMatrix);
 
-    orbitas[1].setModelViewMatrix(worldViewMatrix);
-    orbitas[1].setMaterial(material.setMaterial("brown_paper"));
-    orbitas[1].setLight(light);
-    orbitas[1].paintGL(projectionMatrix);
-
-    orbitas[2].setModelViewMatrix(worldViewMatrix);
-    orbitas[2].setMaterial(material.setMaterial("green_plastic"));
-    orbitas[2].setLight(light);
-    orbitas[2].paintGL(projectionMatrix);
-
-    orbitas[3].setModelViewMatrix(worldViewMatrix);
-    orbitas[3].setMaterial(material.setMaterial("yellow_plastic"));
-    orbitas[3].setLight(light);
-    orbitas[3].paintCubeGL(projectionMatrix, cubeTextures);
+    for (int i = 0;i < 4; i++) {
+        orbitas[i].setModelViewMatrix(worldViewMatrix);
+        orbitas[i].setMaterial(material.setMaterial("white_plastic"));
+        orbitas[i].setLight(light);
+        orbitas[i].paintCubeGL(projectionMatrix, cubeTextures);
+    }
 }
 
 void GLWidget :: initializeGL ()

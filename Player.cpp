@@ -59,7 +59,8 @@ void Player::move(bool * keyDirection)
 void Player::jump()
 {
     if( t < 0.025 ){
-       t += 0.025;
+
+     t += 0.025;
 
       posInicialPuloX = posX;
       posInicialPuloZ = posZ;
@@ -108,7 +109,7 @@ void Player::fall()
 
 double Player::getanguloOrbita(int ang)
 {
-        return (this->anguloOrbita + ang)*PI/180;
+    return (this->anguloOrbita + ang)*PI/180;
 }
 
 void Player::anguloOrbitaIncrement(double increment)
