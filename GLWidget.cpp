@@ -317,7 +317,7 @@ void GLWidget :: initializeGL ()
         this->cubeTextures[j] = bindTexture(QPixmap(QString(":/images/side%1.png").arg(j + 1)), GL_TEXTURE_2D);
     }
 
-    glClearColor (0.8, 0.9, 1, 1);
+    glClearColor (0.8f, 0.9f, 1, 1);
 
 	showObj();
 }

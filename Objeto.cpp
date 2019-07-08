@@ -196,18 +196,14 @@ void Objeto :: genNormals ()
 
 void Objeto :: genTextures ()
 {
-    //Funcao para gerar as texturas baseado nos vt informado pelo arquivo obj
-    texCoords.clear() ;
-    for ( unsigned int i = 0; i < numVertices ; i ++) {
-        texCoords.push_back(QVector2D());
-    }
-    
+    //Funcao para gerar as normais baseado nos vn informado pelo arquivo obj
+    texCoords.clear();
     intDoub vvn;
 
     while(!vertVt.empty()){
         vvn= vertVt.front();
         vertVt.pop();
-        texCoords[vvn.first] += vertTexture[vvn.second];
+        texCoords [vvn.first] += vertTexture[vvn.second];
     }
 
     for ( unsigned int i = 0; i < numVertices ; i ++) {
@@ -463,6 +459,7 @@ void Objeto::genMagicCubeNormals()
 
 void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
 {
+
     //Funcao para exibir o objeto na tela
     if (! vboVertices ){
         return ;
@@ -531,6 +528,7 @@ void Objeto::paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures)
     shaderProgram -> setUniformValue("texColorMap", 0);
 
     for (int i = 0; i < 6; ++i) {
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
         glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
     }
