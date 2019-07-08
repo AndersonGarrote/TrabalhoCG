@@ -30,6 +30,7 @@ protected :
 
 public slots :
     void showObj ();
+    void timerUpdate();
 
 private:
     Player player;

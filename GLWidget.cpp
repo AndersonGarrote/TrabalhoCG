@@ -18,6 +18,11 @@ GLWidget :: GLWidget ( QWidget * parent) :
 
     //Configurando camera inicial
     camera.setCamera(cameras[0].eye, cameras[0].at, cameras[0].up);
+
+    //Setando Timer de 20 milisegundos para atualizar a cena
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerUpdate()));
+    timer->start(20);
 }
 
 GLWidget ::~GLWidget ()
@@ -159,6 +164,17 @@ void GLWidget :: showObj ()
 
         paintGL();
     }
+}
+
+void GLWidget::timerUpdate()
+{
+    orbitas[0].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(0)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(0)));
+    orbitas[1].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(90)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(90)));
+    orbitas[2].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(180)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(180)));
+    orbitas[3].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(270)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(270)));
+    player.anguloOrbitaIncrement(2.5);
+
+    updateGL();
 }
 
 void GLWidget :: paintGL ()
