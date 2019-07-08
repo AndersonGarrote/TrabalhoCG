@@ -10,7 +10,8 @@ QT += opengl
 
 # Input
 HEADERS += Camera.h GLWidget.h Light.h MainWindow.h Material.h Objeto.h TrackBall.h \
-    Player.h
+    Player.h \
+    ui_mainwindow.h
 FORMS += mainwindow.ui
 SOURCES += Camera.cpp \
            GLWidget.cpp \
@@ -20,9 +21,14 @@ SOURCES += Camera.cpp \
            MainWindow.cpp \
            Material.cpp \
            Objeto.cpp \
-           TrackBall.cpp
+           TrackBall.cpp \
+           moc_GLWidget.cpp \
+           moc_MainWindow.cpp \
+           qrc_resources.cpp
 RESOURCES += resources.qrc
 
 #Shaders
 OTHER_FILES += fphong.glsl \
-              vphong.glsl
+              vphong.glsl \
+              fphongtex.glsl \
+              vphongtex.glsl

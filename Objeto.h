@@ -2,6 +2,7 @@
 # define OBJETO_H
 
 #include <QtOpenGL>
+#include <QPixmap>
 
 #include <iostream>
 #include <bits/stdc++.h>
@@ -30,6 +31,10 @@ public :
     void setRotation(double angle, double x, double y, double z);
     void setTranslation(double x, double y, double z);
     void setScale(double x, double y, double z);
+    void genMagicCube();
+    void genMagicCubeNormals();
+    void paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures);
+    void createTextureShaders();
 
 protected:
     double posX, posY, posZ;
@@ -52,11 +57,15 @@ private :
     QGLBuffer * vboVertices ;
     QGLBuffer * vboNormals ;
     QGLBuffer * vboIndices;
+    QGLBuffer * vboTextureCoords;
     QGLShaderProgram * shaderProgram ;
     QGLShader * vertexShader ;
     QGLShader * fragmentShader ;
     Light light ;
     Material material ;
+
+    QVector<QVector2D> texCoords;
+
 };
 
 #endif // OBJETO_H

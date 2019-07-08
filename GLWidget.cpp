@@ -144,23 +144,15 @@ void GLWidget :: showObj ()
         orbitas[2].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() - 0.05);
         orbitas[2].setScale(0.05,0.05,0.05);
 
-        //Gerar o segundo objeto que vai orbitar o player
+        //Gerar o quarto objeto que vai orbitar o player
         fileName = "./objFiles/blocos/bloco2x2.obj";
-        orbitas[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-        orbitas[3].genNormals ();
+        //orbitas[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        orbitas[3].genMagicCube();
+        orbitas[3].genMagicCubeNormals ();
         orbitas[3].createVBOs ();
-        orbitas[3].createShaders ();
+        orbitas[3].createTextureShaders ();
         orbitas[3].setPosition(player.getPlayerPos().x() - 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
         orbitas[3].setScale(0.05,0.05,0.05);
-
-//        //Gerar o segundo objeto que vai orbitar o player
-//        fileName = "./objFiles/blocos/bloco2x2.obj";
-//        objetos[5].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
-//        objetos[5].genNormals ();
-//        objetos[5].createVBOs ();
-//        objetos[5].createShaders ();
-//        objetos[5].setPosition(player.getPlayerPos().x() + 0.05,player.getPlayerPos().y(), player.getPlayerPos().z());
-//        objetos[5].setScale(0.05,0.05,0.05);
 
         paintGL();
     }
@@ -252,7 +244,7 @@ void GLWidget :: paintGL ()
     orbitas[3].setModelViewMatrix(worldViewMatrix);
     orbitas[3].setMaterial(material.setMaterial("yellow_plastic"));
     orbitas[3].setLight(light);
-    orbitas[3].paintGL(projectionMatrix);
+    orbitas[3].paintCubeGL(projectionMatrix, cubeTextures);
 }
 
 void GLWidget :: initializeGL ()
@@ -260,7 +252,16 @@ void GLWidget :: initializeGL ()
 	//Funcao para inicializar o programa
     makeCurrent();
     glEnable ( GL_DEPTH_TEST );
+
+    glEnable(GL_TEXTURE_2D);
+
+    //Lendo texturas do cubo
+    for (int j=0; j < 6; ++j) {
+        this->cubeTextures[j] = bindTexture(QPixmap(QString(":/images/side%1.png").arg(j + 1)), GL_TEXTURE_2D);
+    }
+
     glClearColor (0.8, 0.9, 1, 1);
+
 	showObj();
 }
 
