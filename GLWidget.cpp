@@ -6,6 +6,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
     objetos = new Objeto[8];
+    blocos = new Objeto[4];
     orbitas = new Objeto[4];
 	  flagAbertura = 1;
 
@@ -104,7 +105,7 @@ void GLWidget :: showObj ()
         objetos[6].genNormals ();
         objetos[6].createVBOs ();
         objetos[6].createShaders ();
-        objetos[6].setPosition(-0.1, 0.078, 0);
+        objetos[6].setPosition(0.1, 0.078, -0.15);
         objetos[6].setScale(0.3,0.3,0.3);
 
         //Gerar o oitavo objeto
@@ -116,6 +117,42 @@ void GLWidget :: showObj ()
         objetos[7].setPosition(-0.13, 0.045, 0.1);
         objetos[7].setScale(0.3,0.3,0.3);
         objetos[7].setRotation(270, 0, 1, 0);
+
+        //Gerar o primeiro bloco
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        blocos[0].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        blocos[0].genNormals ();
+        blocos[0].createVBOs ();
+        blocos[0].createShaders ();
+        blocos[0].setPosition(0.15, 0.045, 0.15);
+        blocos[0].setScale(0.1,0.1,0.1);
+
+        //Gerar o segundo bloco
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        blocos[1].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        blocos[1].genNormals ();
+        blocos[1].createVBOs ();
+        blocos[1].createShaders ();
+        blocos[1].setPosition(-0.15, 0.045, 0.02);
+        blocos[1].setScale(0.1,0.1,0.1);
+
+        //Gerar o terceiro bloco
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        blocos[2].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        blocos[2].genNormals ();
+        blocos[2].createVBOs ();
+        blocos[2].createShaders ();
+        blocos[2].setPosition(-0.06, 0.045, 0.14);
+        blocos[2].setScale(0.1,0.1,0.1);
+
+        //Gerar o quarto bloco
+        fileName = "./objFiles/blocos/bloco2x2.obj";
+        blocos[3].readOBJFile ( fileName ); //funcao para leitura do arquivo obj
+        blocos[3].genNormals ();
+        blocos[3].createVBOs ();
+        blocos[3].createShaders ();
+        blocos[3].setPosition(0.12, 0.045, -0.13);
+        blocos[3].setScale(0.1,0.1,0.1);
 
         //Gerar o primeiro objeto que vai orbitar o player
         fileName = "./objFiles/blocos/bloco2x2.obj";
@@ -225,6 +262,26 @@ void GLWidget :: paintGL ()
     objetos[7].setMaterial(material.setMaterial("yellow_plastic"));
     objetos[7].setLight(light);
     objetos[7].paintGL(projectionMatrix);
+
+    blocos[0].setModelViewMatrix(worldViewMatrix);
+    blocos[0].setMaterial(material.setMaterial("other_material"));
+    blocos[0].setLight(light);
+    blocos[0].paintGL(projectionMatrix);
+
+    blocos[1].setModelViewMatrix(worldViewMatrix);
+    blocos[1].setMaterial(material.setMaterial("brown_paper"));
+    blocos[1].setLight(light);
+    blocos[1].paintGL(projectionMatrix);
+
+    blocos[2].setModelViewMatrix(worldViewMatrix);
+    blocos[2].setMaterial(material.setMaterial("green_plastic"));
+    blocos[2].setLight(light);
+    blocos[2].paintGL(projectionMatrix);
+
+    blocos[3].setModelViewMatrix(worldViewMatrix);
+    blocos[3].setMaterial(material.setMaterial("yellow_plastic"));
+    blocos[3].setLight(light);
+    blocos[3].paintGL(projectionMatrix);
 
     orbitas[0].setModelViewMatrix(worldViewMatrix);
     orbitas[0].setMaterial(material.setMaterial("other_material"));
