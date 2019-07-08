@@ -6,6 +6,7 @@ GLWidget :: GLWidget ( QWidget * parent) :
 	//Construtor, inicializando os valores das variaveis
     zoom = 0;
     objetos = new Objeto[8];
+    blocos = new Objeto[4];
     orbitas = new Objeto[4];
 	  flagAbertura = 1;
 
@@ -104,7 +105,7 @@ void GLWidget :: showObj ()
         objetos[6].genNormals ();
         objetos[6].createVBOs ();
         objetos[6].createShaders ();
-        objetos[6].setPosition(-0.1, 0.078, 0);
+        objetos[6].setPosition(0.1, 0.078, -0.15);
         objetos[6].setScale(0.3,0.3,0.3);
 
         //Gerar o oitavo objeto
@@ -117,14 +118,30 @@ void GLWidget :: showObj ()
         objetos[7].setScale(0.3,0.3,0.3);
         objetos[7].setRotation(270, 0, 1, 0);
 
-        for (int i = 0;i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             orbitas[i].genMagicCube();
             orbitas[i].genMagicCubeNormals ();
             orbitas[i].createVBOs ();
-            orbitas[i].createTextureShaders ();
-            orbitas[i].setPosition(player.getPlayerPos().x() - 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
+            orbitas[i].createTextureShaders();
             orbitas[i].setScale(0.05,0.05,0.05);
+
+            blocos[i].genMagicCube();
+            blocos[i].genMagicCubeNormals ();
+            blocos[i].createVBOs ();
+            blocos[i].createTextureShaders ();
+            blocos[i].setScale(0.1,0.1,0.1);
         }
+
+
+        blocos[0].setPosition(0.15, 0.045, 0.15);
+        blocos[1].setPosition(-0.15, 0.045, 0.02);
+        blocos[2].setPosition(-0.06, 0.045, 0.14);
+        blocos[3].setPosition(0.12, 0.045, -0.13);
+
+        orbitas[0].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05);
+        orbitas[1].setPosition(player.getPlayerPos().x() + 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
+        orbitas[2].setPosition(player.getPlayerPos().x(),player.getPlayerPos().y(), player.getPlayerPos().z() - 0.05);
+        orbitas[3].setPosition(player.getPlayerPos().x() - 0.05 ,player.getPlayerPos().y(), player.getPlayerPos().z());
 
         paintGL();
     }
@@ -197,8 +214,12 @@ void GLWidget :: paintGL ()
     objetos[7].setLight(light);
     objetos[7].paintGL(projectionMatrix);
 
+    for (int i = 0; i < 4; i++) {
+        blocos[i].setModelViewMatrix(worldViewMatrix);
+        blocos[i].setMaterial(material.setMaterial("white_plastic"));
+        blocos[i].setLight(light);
+        blocos[i].paintCubeGL(projectionMatrix, cubeTextures);
 
-    for (int i = 0;i < 4; i++) {
         orbitas[i].setModelViewMatrix(worldViewMatrix);
         orbitas[i].setMaterial(material.setMaterial("white_plastic"));
         orbitas[i].setLight(light);
@@ -219,7 +240,7 @@ void GLWidget :: initializeGL ()
         this->cubeTextures[j] = bindTexture(QPixmap(QString(":/images/side%1.png").arg(j + 1)), GL_TEXTURE_2D);
     }
 
-    glClearColor (0.8, 0.9, 1, 1);
+    glClearColor (0.8f, 0.9f, 1, 1);
 
 	showObj();
 }

@@ -3,7 +3,7 @@
 in vec3 fNormal;
 in vec4 eyePosition;
 in vec3 normalInter;
-in vec2 fTextureCoord;
+varying mediump vec2 fTextureCoord;
 
 uniform vec4 lightPosition;
 
@@ -28,7 +28,8 @@ void main ()
     vec4 diffuse = Kd * diffuseProduct ;
     vec4 specular = Ks * specularProduct ;
     vec4 ambient = ambientProduct ;
-    fColor = (ambient + diffuse + specular) * texture2D(texColorMap , fTextureCoord) ;
+    //fColor = (ambient + diffuse + specular) * texture2D(texColorMap , fTextureCoord) ;
+    fColor = texture2D(texColorMap , fTextureCoord);
     fColor.a = 1.0;
 
 }
