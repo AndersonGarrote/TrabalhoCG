@@ -108,3 +108,13 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 
     ui->glwidget->interact(keyDirection);
 }
+
+void MainWindow::on_actionGouraud_triggered()
+{
+    ui->glwidget->setShader(1);
+}
+
+void MainWindow::on_actionPhong_triggered()
+{
+    ui->glwidget->setShader(0);
+}

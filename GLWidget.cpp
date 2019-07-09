@@ -155,6 +155,7 @@ void GLWidget::timerUpdate()
     orbitas[1].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(90)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(90)));
     orbitas[2].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(180)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(180)));
     orbitas[3].setPosition(player.getPlayerPos().x() + 0.05*sin(player.getanguloOrbita(270)), player.getPlayerPos().y(), player.getPlayerPos().z() + 0.05*cos(player.getanguloOrbita(270)));
+
     player.anguloOrbitaIncrement(2.5);
 
     updateGL();
@@ -374,4 +375,24 @@ void GLWidget::interact(bool *keyDirection)
         flagAparecer[3] = 1;
     }
     updateGL();
+}
+
+void GLWidget::setShader(int s)
+{
+    if( s < 2 && s >= 0){
+        player.setCurrentShader(s);
+        player.createShaders();
+        for (int i = 0;i < 8; i++) {
+            objetos[i].setCurrentShader(s);
+            objetos[i].createShaders();
+        }
+        for (int i = 0; i < 4; i++) {
+            //orbitas[i].setCurrentShader(s);
+            //orbitas[i].createTextureShaders();
+            //blocos[i].setCurrentShader(s);
+           // blocos[i].createTextureShaders();
+        }
+
+        updateGL();
+    }
 }

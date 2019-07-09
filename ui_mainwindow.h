@@ -33,6 +33,8 @@ public:
     QAction *actionSair;
     QAction *actionZoom_in;
     QAction *actionZoom_out;
+    QAction *actionGouraud;
+    QAction *actionPhong;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     GLWidget *glwidget;
@@ -40,6 +42,7 @@ public:
     QMenu *menuCamera;
     QMenu *menuOp_es;
     QMenu *menuAjuda;
+    QMenu *menuShaders;
     QToolBar *toolBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -64,6 +67,10 @@ public:
         actionZoom_in->setObjectName(QString::fromUtf8("actionZoom_in"));
         actionZoom_out = new QAction(MainWindow);
         actionZoom_out->setObjectName(QString::fromUtf8("actionZoom_out"));
+        actionGouraud = new QAction(MainWindow);
+        actionGouraud->setObjectName(QString::fromUtf8("actionGouraud"));
+        actionPhong = new QAction(MainWindow);
+        actionPhong->setObjectName(QString::fromUtf8("actionPhong"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -78,13 +85,15 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1000, 25));
+        menuBar->setGeometry(QRect(0, 0, 1000, 22));
         menuCamera = new QMenu(menuBar);
         menuCamera->setObjectName(QString::fromUtf8("menuCamera"));
         menuOp_es = new QMenu(menuBar);
         menuOp_es->setObjectName(QString::fromUtf8("menuOp_es"));
         menuAjuda = new QMenu(menuBar);
         menuAjuda->setObjectName(QString::fromUtf8("menuAjuda"));
+        menuShaders = new QMenu(menuBar);
+        menuShaders->setObjectName(QString::fromUtf8("menuShaders"));
         MainWindow->setMenuBar(menuBar);
         toolBar = new QToolBar(MainWindow);
         toolBar->setObjectName(QString::fromUtf8("toolBar"));
@@ -92,11 +101,14 @@ public:
 
         menuBar->addAction(menuOp_es->menuAction());
         menuBar->addAction(menuCamera->menuAction());
+        menuBar->addAction(menuShaders->menuAction());
         menuBar->addAction(menuAjuda->menuAction());
         menuCamera->addAction(actionCamera_1);
         menuCamera->addAction(actionCamera_2);
         menuOp_es->addAction(actionSair);
         menuAjuda->addAction(actionWiki);
+        menuShaders->addAction(actionGouraud);
+        menuShaders->addAction(actionPhong);
         toolBar->addAction(actionZoom_in);
         toolBar->addAction(actionZoom_out);
 
@@ -113,14 +125,21 @@ public:
         actionCamera_2->setText(QApplication::translate("MainWindow", "Camera 2", 0, QApplication::UnicodeUTF8));
         actionCamera_2->setShortcut(QApplication::translate("MainWindow", "Ctrl+2", 0, QApplication::UnicodeUTF8));
         actionWiki->setText(QApplication::translate("MainWindow", "Wiki...", 0, QApplication::UnicodeUTF8));
+        actionWiki->setShortcut(QApplication::translate("MainWindow", "F1", 0, QApplication::UnicodeUTF8));
         actionSair->setText(QApplication::translate("MainWindow", "Sair", 0, QApplication::UnicodeUTF8));
+        actionSair->setShortcut(QApplication::translate("MainWindow", "Shift+Esc", 0, QApplication::UnicodeUTF8));
         actionZoom_in->setText(QApplication::translate("MainWindow", "Zoom in", 0, QApplication::UnicodeUTF8));
         actionZoom_in->setShortcut(QApplication::translate("MainWindow", "Ctrl++", 0, QApplication::UnicodeUTF8));
         actionZoom_out->setText(QApplication::translate("MainWindow", "Zoom out", 0, QApplication::UnicodeUTF8));
         actionZoom_out->setShortcut(QApplication::translate("MainWindow", "Ctrl+-", 0, QApplication::UnicodeUTF8));
+        actionGouraud->setText(QApplication::translate("MainWindow", "Gouraud", 0, QApplication::UnicodeUTF8));
+        actionGouraud->setShortcut(QApplication::translate("MainWindow", "Ctrl+G", 0, QApplication::UnicodeUTF8));
+        actionPhong->setText(QApplication::translate("MainWindow", "Phong", 0, QApplication::UnicodeUTF8));
+        actionPhong->setShortcut(QApplication::translate("MainWindow", "Ctrl+P", 0, QApplication::UnicodeUTF8));
         menuCamera->setTitle(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
         menuOp_es->setTitle(QApplication::translate("MainWindow", "Op\303\247\303\265es", 0, QApplication::UnicodeUTF8));
         menuAjuda->setTitle(QApplication::translate("MainWindow", "Ajuda", 0, QApplication::UnicodeUTF8));
+        menuShaders->setTitle(QApplication::translate("MainWindow", "Shaders", 0, QApplication::UnicodeUTF8));
         toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

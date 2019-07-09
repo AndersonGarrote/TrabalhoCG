@@ -37,6 +37,7 @@ public :
     void paintCubeGL(QMatrix4x4 projectionMatrix, GLuint * textures);
     void createTextureShaders();
     QVector3D getObjetoPos();
+    void setCurrentShader(unsigned int value);
 
 protected:
     double posX, posY, posZ;

@@ -4,6 +4,8 @@
         <file>vphong.glsl</file>
         <file>fphongtex.glsl</file>
         <file>vphongtex.glsl</file>
+        <file>vgouraud.glsl</file>
+        <file>fgouraud.glsl</file>
     </qresource>
     <qresource prefix="/">
         <file>images/side6.png</file>

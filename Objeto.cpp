@@ -33,9 +33,14 @@ QVector3D Objeto::getObjetoPos()
     return QVector3D(posX,posY,posZ);
 }
 
+void Objeto::setCurrentShader(unsigned int value)
+{
+    currentShader = value;
+}
+
 void Objeto :: readOBJFile ( const QString & fileName )
 {
-	//Funcao para a leitura de um arquivo .obj
+    //Funcao para a leitura de um arquivo .obj
 	//Os dados extraidos do arquivo sao armazenados nas estruturas de dados desse programa
 	std :: ifstream stream ;
 
@@ -294,12 +299,12 @@ void Objeto :: createShaders ()
 
     destroyShaders (); //Primeiro destroi os shaders antigos
 
-	//Vincula os novos shaders
+    //Vincula os novos shaders
     QString vertexShaderFile [] = {
-        ":/shaders/vphong.glsl",
+        ":/shaders/vphong.glsl", ":/shaders/vgouraud.glsl"
     };
     QString fragmentShaderFile [] = {
-        ":/shaders/fphong.glsl",
+        ":/shaders/fphong.glsl", ":/shaders/fgouraud.glsl"
     };
 
     vertexShader = new QGLShader( QGLShader::Vertex );

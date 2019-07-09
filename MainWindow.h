@@ -40,6 +40,10 @@ private slots:
 
     void keyReleaseEvent(QKeyEvent * event);
 
+    void on_actionGouraud_triggered();
+
+    void on_actionPhong_triggered();
+
 private:
     Ui::MainWindow *ui;
 

@@ -30,7 +30,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCamera">
@@ -52,8 +52,16 @@
     </property>
     <addaction name="actionWiki"/>
    </widget>
+   <widget class="QMenu" name="menuShaders">
+    <property name="title">
+     <string>Shaders</string>
+    </property>
+    <addaction name="actionGouraud"/>
+    <addaction name="actionPhong"/>
+   </widget>
    <addaction name="menuOp_es"/>
    <addaction name="menuCamera"/>
+   <addaction name="menuShaders"/>
    <addaction name="menuAjuda"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -95,10 +103,16 @@
    <property name="text">
     <string>Wiki...</string>
    </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
   </action>
   <action name="actionSair">
    <property name="text">
     <string>Sair</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Esc</string>
    </property>
   </action>
   <action name="actionZoom_in">
@@ -115,6 +129,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionGouraud">
+   <property name="text">
+    <string>Gouraud</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionPhong">
+   <property name="text">
+    <string>Phong</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

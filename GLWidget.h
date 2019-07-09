@@ -18,6 +18,7 @@ public :
     void zoomOut();
     void changeCamera(unsigned long i);
     void interact( bool * keyDirection );
+    void setShader(int s);
 
 protected :
     void initializeGL ();
