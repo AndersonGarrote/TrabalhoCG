@@ -331,10 +331,10 @@ void Objeto :: createTextureShaders ()
 
     //Vincula os novos shaders
     QString vertexShaderFile [] = {
-        ":/shaders/vphongtex.glsl",
+        ":/shaders/vphongtex.glsl", ":/shaders/vgouraudtex.glsl"
     };
     QString fragmentShaderFile [] = {
-        ":/shaders/fphongtex.glsl",
+        ":/shaders/fphongtex.glsl", ":/shaders/fgouraudtex.glsl"
     };
 
     vertexShader = new QGLShader( QGLShader::Vertex );

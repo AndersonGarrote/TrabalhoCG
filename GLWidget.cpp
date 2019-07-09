@@ -387,10 +387,10 @@ void GLWidget::setShader(int s)
             objetos[i].createShaders();
         }
         for (int i = 0; i < 4; i++) {
-            //orbitas[i].setCurrentShader(s);
-            //orbitas[i].createTextureShaders();
-            //blocos[i].setCurrentShader(s);
-           // blocos[i].createTextureShaders();
+            orbitas[i].setCurrentShader(s);
+            orbitas[i].createTextureShaders();
+            blocos[i].setCurrentShader(s);
+            blocos[i].createTextureShaders();
         }
 
         updateGL();
